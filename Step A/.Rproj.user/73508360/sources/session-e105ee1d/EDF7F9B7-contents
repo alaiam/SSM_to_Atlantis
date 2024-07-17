@@ -1,0 +1,323 @@
+#!/bin/bash
+# File name: Step3_kriging_variables_velocities_01042024_cbskyam.py
+
+###########
+# import packages
+import numpy as np
+import xarray as xr
+import netCDF4
+import datetime as dt
+import os
+import pyinterp
+import pyproj
+import sys
+
+# Step 1a: Set grid based on previous example file grid structure
+
+# Create an RTree instance for spatial indexing using pyinterp
+mesh = pyinterp.RTree()
+
+def kriging_universal(original_values, original_lon, original_lat, new_lon, new_lat):
+    # Pack the original data into the RTree for spatial indexing (erases previous data)
+    mesh.packing(np.vstack((original_lon, original_lat)).T, original_values)
+    # Perform universal kriging to interpolate new_lon, new_lat points
+    kriging, neighbors = mesh.universal_kriging(np.vstack((new_lat.ravel(), new_lon.ravel())).T, within=True, k=11,
+                                                covariance='matern_12', alpha=1_000_000, num_threads=0)
+    return kriging.reshape(new_lon.shape)
+
+###########
+# Step 1b: Set grid based on previous example file grid structure
+
+# POINT TO PREVIOUS/EXAMPLE FILE
+# Define the file name of the original Salish Sea Model NetCDF data
+gridfile = "/home/atlantis/amps_hydrodynamics/SSM_v43_2018_0001.nc"
+
+###########
+# ********It is necessary to change the name of the variable that is the same as the dimension*******
+# THIS STEP IS JUST DONE ONCE PER SSM FILE
+
+# Rename the variable that conflicts with a dimension name
+#ds = netCDF4.Dataset(filename, mode='r+')
+#ds.renameVariable('siglev3dn', 'siglev_matrix')
+
+# Open the NetCDF file and read the original Salish Sea Model data
+#ssm_solution = xr.open_dataset(gridfile, decode_cf=True, decode_times=False)
+ssm_solution = xr.open_dataset(gridfile,decode_cf=True,decode_times=False)
+print('NetCDF file read!')
+
+###########
+# Step 1c: Set grid based on previous example file grid structure
+
+# MAIN GRID
+# ~~~~~~~~~~~~~~
+# Define the regular grid with a step of 0.01 for the new latitude and longitude
+# (around 1km)
+min_lat = ssm_solution.lat.min().values
+max_lat = ssm_solution.lat.max().values
+min_lon = ssm_solution.lon.min().values
+max_lon = ssm_solution.lon.max().values
+STEP = 0.01
+reg_lat = np.arange(min_lat - STEP, max_lat + STEP, STEP)
+reg_lon = np.arange(min_lon - STEP, max_lon + STEP, STEP)
+
+# SLICE SSM DATA BY AMPS DOMAIN: xmin = -124, xmax = -123,ymin = 45, ymax = 50
+reg_latmask = (reg_lat > 45) & (reg_lat <50)
+reg_lat_a=reg_lat[reg_latmask]
+
+reg_lonmask = (reg_lon > -124) & (reg_lon < -123)
+reg_lon_a=reg_lon[reg_lonmask]
+
+# Meshgrid for the regular grid
+mx, my = np.meshgrid(reg_lat_a, reg_lon_a, indexing='ij')
+# Global Values
+original_siglay = ssm_solution.siglay.values
+original_siglay_value = np.sort(np.unique(ssm_solution.siglay_matrix.values))[::-1] # AM edit
+original_siglev = ssm_solution.siglev.values
+original_time = ssm_solution.time_vector.values
+
+print('Finished MAIN GRID')
+
+####
+# end Step 1 grid and function set up
+
+
+###########
+# Step 2a: set filename here if not using batch script
+
+# point to filename here or in batch script from new file:
+#filename = "//nfsdata/SSM_example/HYD/ssm_00117.nc" # This should walk through the list of files
+#filename = "~/amps_hydrodynamics/ssm_00115_copy_test.nc" # This should walk through the list of files
+
+filename = sys.argv[1] # it works with 0 for me
+print(filename)
+
+###########
+
+# Step 2b: necessary renaming of variables in SSM output files
+# ********It is necessary to change the name of the variable that is the same as the dimension*******
+# THIS STEP IS JUST DONE ONCE PER SSM FILE
+
+# with netCDF4.Dataset(filename, mode='r+') as ds:
+#ds = netCDF4.Dataset(filename, mode='r+')
+#ds.renameVariable('siglev3dn', 'siglev_matrix')
+
+# reverse this
+#ds.renameVariable('siglev_matrix', 'siglev3dn')
+
+###########
+# Step 2b: open netCDF file
+# Open the NetCDF file and read the original Salish Sea Model data
+ssm_solution_1 = xr.open_dataset(filename, decode_cf=True, decode_times=False)
+print('NetCDF file read!')
+
+xssmvarb = ssm_solution_1.x.data # These are swapped on purpose
+yssmvarb = ssm_solution_1.y.data # These are swapped on purpose 
+
+# Su Kyong's UTM to Lat/Lon conversion code
+transformer_xy_latlon = pyproj.Transformer.from_crs('epsg:26910', 'epsg:4326', always_xy=True)
+#lon_1, lat_1 = transformer_xy_latlon.transform(ssm_solution_1['x'][:].data, ssm_solution_1['y'][:].data)
+lon_1, lat_1 = transformer_xy_latlon.transform(xssmvarb, yssmvarb)
+
+# SLICE SSM DATA BY AMPS DOMAIN: xmin = -124, xmax = -123,ymin = 45, ymax = 50
+latmask = (lat_1 > 45) & (lat_1 <50)
+lat_1a=lat_1[latmask]
+
+lonmask = (lon_1 > -124) & (lon_1 < -123)
+lon_1a=lon_1[lonmask]
+
+print('Transformed to lat/lon!')
+
+###########
+# Step 2c: Start section 1 of interpolation code
+# NEW grid set up in SSM files
+# this will not be used for the interpolation step, but necessary to unpack netCDF file.
+
+# ~~~~~~~~~~~~~~
+# Define the regular grid with a step of 0.01 for the new latitude and longitude
+min_lat_1 = lat_1a.min()
+max_lat_1 = lat_1a.max()
+min_lon_1 = lon_1a.min()
+max_lon_1 = lon_1a.max()
+
+STEP = 0.01
+
+reg_lat_1 = np.arange(min_lat_1 - STEP, max_lat_1 + STEP, STEP)
+reg_lon_1 = np.arange(min_lon_1 - STEP, max_lon_1 + STEP, STEP)
+
+# Meshgrid for the regular grid
+mx_1, my_1 = np.meshgrid(reg_lat_1, reg_lon_1, indexing='ij') #, copy =False
+
+print('Defined meshgrid!')
+
+# Global Values
+original_siglay_1 = ssm_solution_1.siglay.values
+original_siglev_1 = ssm_solution_1.siglev.values
+original_time_1 = ssm_solution_1.time.values 
+
+#######
+# Assign original_time variable based on time from new file
+#original_time = original_time_1 # # based on NEW file
+
+#######
+# Step 2d: Start interpolation of variables like temperature, salinity and sigma layer values
+# Define the dimensions of the data
+siglay_size = len(original_siglay_1)
+siglev_size = len(original_siglev_1)
+time_size = len(original_time)
+
+# Variables
+# Extract the original latitude, longitude, sigma layer, and time values
+original_lat_1 = ssm_solution_1.lat.values # based on previous grid structure...
+original_lon_1 = ssm_solution_1.lon.values # based on previous grid structure...
+
+# SLICE SSM DATA BY AMPS DOMAIN: xmin = -124, xmax = -123,ymin = 45, ymax = 50
+latmask1 = (original_lat_1 > 45) & (original_lat_1 <50)
+original_lat_1a=original_lat_1[latmask1]
+
+lonmask1 = (original_lon_1 > -124) & (original_lon_1 < -123)
+original_lon_1a=original_lon_1[lonmask1]
+
+# Create empty arrays to store the interpolated temperature, salinity, and sigma layer values
+new_regular_temp = np.full((len(original_time_1), len(
+    original_siglay_1), len(reg_lat_1), len(reg_lon_1)), np.nan)
+new_regular_salt = np.full((len(original_time), len(
+    original_siglay_1), len(reg_lat_1), len(reg_lon_1)), np.nan)
+new_regular_sigmalay = np.full(
+    (len(original_siglay_1), len(reg_lat_1), len(reg_lon_1)), np.nan)
+
+# Loop over each depth layer and interpolate the data onto the regular grid
+for d in range(0, siglay_size):
+#for d in range(0,1):
+    # Extract sigma layer values
+    # siglev_matrix(siglev, node) ;
+    #org_sigma = ssm_solution.siglay_matrix[d].values
+    
+    #Alaia noted that the sigma changes slightly given the kriging and suggests taking out the new_regular_sigmalay call here
+    #org_sigma=np.ones((16012))*original_siglay_1[d] # SY edits
+   # new_regular_sigmalay[d][:] = kriging_universal(
+        #org_sigma, original_lon_1a, original_lat_1a, my_1, mx_1)
+
+    for t in range(0, time_size):  # Loop over time steps
+        org_temp = ssm_solution_1.temp[t][d].values  # Extract temperature values
+        # Extract salinity values
+        org_salt = ssm_solution_1.salinity[t][d].values
+        new_regular_temp[t][d][:] = kriging_universal(
+            org_temp, original_lon_1a, lat_1a, my_1, mx_1)
+        new_regular_salt[t][d][:] = kriging_universal(
+            org_salt, original_lon_1a, original_lat_1a, my_1, mx_1)
+
+print('Interpolation variables done!')
+
+# Step 2d: Start interpolation of Velocity Fields
+# ~~~~~~~~~~~~~~
+# Extract the original latitude, longitude, from each nele
+original_latc = ssm_solution.latc.values # based on previous grid structure...
+original_lonc = ssm_solution.lonc.values # based on previous grid structure...
+
+# SLICE SSM DATA BY AMPS DOMAIN: xmin = -124, xmax = -123,ymin = 45, ymax = 50
+latmask2 = (original_latc > 45) & (original_latc <50)
+original_latc_a=original_latc[latmask2]
+
+lonmask2 = (original_lonc > -124) & (original_lonc < -123)
+original_lonc_a=original_lonc[lonmask2]
+
+# Create empty arrays to store the interpolated velocity fields
+new_regular_v = np.full((len(original_time), len(
+    original_siglay), len(reg_lat_a), len(reg_lon_a)), np.nan)
+new_regular_u = np.full((len(original_time), len(
+    original_siglay), len(reg_lat_a), len(reg_lon_a)), np.nan)
+
+# Loop over each depth layer and interpolate the data onto the regular grid
+for d in range(0, siglay_size):
+    for t in range(0, time_size):  # Loop over time steps
+        org_u = ssm_solution_1.u[t][d].values  # Extract temperature values
+        org_v = ssm_solution_1.v[t][d].values  # Extract salinity values
+        new_regular_u[t][d][:] = kriging_universal(
+            org_u, original_lonc_a, original_latc_a, my, mx)
+        new_regular_v[t][d][:] = kriging_universal(
+            org_v, original_lonc_a, original_latc_a, my, mx)
+
+print('Interpolation velocity fields done!')
+
+# Create a new NetCDF file with the interpolated data
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Save the interpolated data to a new NetCDF file
+file_name_output = 'regular_grid_variables_cropped_' + filename
+#nc = netCDF4.Dataset(os.path.join(data_path, file_name_output), 'w')
+nc = netCDF4.Dataset(file_name_output, 'w')
+
+# Define NetCDF global attributes
+nc.title = 'Regular grid for the Salish Sea Model'
+nc.Conventions = 'CF-1.6'
+nc.history = '{0} creation of regular grid NetCDF file by Javier Porobic & Caren Barceló'.format(
+    dt.datetime.now().strftime("%Y-%m-%d"))
+
+# Create NetCDF variables and set attributes
+lat_dim = nc.createDimension('latitude', len(reg_lat))
+lon_dim = nc.createDimension('longitude', len(reg_lon))
+siglev_dim = nc.createDimension('sigma_layer', siglay_size)
+time_dim = nc.createDimension('time', time_size)
+
+lat_var = nc.createVariable('latitude', np.single, ('latitude'))
+lat_var.units = 'degrees_north'
+lat_var.standard_name = 'latitude'
+lat_var.axis = 'Y'
+lat_var[:] = reg_lat.astype('float')
+
+lon_var = nc.createVariable('longitude', np.single, ('longitude'))
+lon_var.units = 'degrees_east'
+lon_var.standard_name = 'longitude'
+lon_var.axis = 'X'
+lon_var[:] = reg_lon.astype('float')
+
+time_var = nc.createVariable('time_vector', np.intc, ('time'))
+time_var.units = 'days since 1858-11-17 00:00:00'
+time_var.standard_name = 'time'
+time_var.format = 'modified julian day (MJD)'
+time_var.time_zone = 'UTC'
+time_var[:] = original_time.astype('int')
+
+siglay_var = nc.createVariable('siglay', np.single, ('sigma_layer'))
+siglay_var.units = 'sigma_layers'
+siglay_var.standard_name = 'ocean_sigma/general_coordinate'
+siglay_var[:] = original_siglay_value.astype('float') # AM edit
+
+# AM edit
+# siglev_var = nc.createVariable(
+#     'siglev', np.single, ('sigma_layer', 'latitude', 'longitude'))
+# siglev_var.units = 'sigma_level'
+# siglev_var.standard_name = 'ocean_sigma/general_coordinate'
+# siglev_var[:] = new_regular_sigmalay.astype('float')
+
+temp_var = nc.createVariable(
+    'temp', np.single, ('time', 'sigma_layer', 'latitude', 'longitude'))
+temp_var.units = 'degrees_C'
+temp_var.standard_name = 'sea_water_temperature'
+temp_var[:] = new_regular_temp.astype('float')
+
+salt_var = nc.createVariable(
+    'salinity', np.single, ('time', 'sigma_layer', 'latitude', 'longitude'))
+salt_var.units = '1e-3'
+salt_var.standard_name = 'sea_water_salinity'
+salt_var[:] = new_regular_salt.astype('float')
+
+u_var = nc.createVariable(
+    'u', np.single, ('time', 'sigma_layer', 'latitude', 'longitude'))
+u_var.units = 'm s-1'
+u_var.standard_name = 'eastward_sea_water_velocity'
+u_var[:] = new_regular_u.astype('float')
+
+v_var = nc.createVariable(
+    'v', np.single, ('time', 'sigma_layer', 'latitude', 'longitude'))
+v_var.units = 'm s-1'
+v_var.standard_name = 'northward_sea_water_velocity'
+v_var[:] = new_regular_v.astype('float')
+
+ww_var = nc.createVariable(
+    'ww', np.single, ('time', 'sigma_layer', 'latitude', 'longitude'))
+ww_var.units = 'm s-1'
+ww_var.standard_name = 'upward_sea_water_velocity'
+ww_var[:] = new_regular_v.astype('float')
+
+nc.close()
+print('New ROMSgrid NetCDF file created!')

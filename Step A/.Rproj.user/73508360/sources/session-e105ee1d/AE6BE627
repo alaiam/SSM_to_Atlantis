@@ -1,0 +1,26 @@
+{
+    "id": "AE6BE627",
+    "path": "~/amps_hydrodynamics/StepA_TS.py",
+    "project_path": "StepA_TS.py",
+    "type": "python",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1717109483295.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "9,9",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1717109924,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1717109924018,
+    "read_only": false,
+    "read_only_alternatives": []
+}

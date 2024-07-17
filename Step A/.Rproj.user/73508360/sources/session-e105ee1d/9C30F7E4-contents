@@ -1,0 +1,23 @@
+library(ncdf4)
+setwd("//nfsdata/time_avg")
+# SSM BGC file example:
+ncin <- nc_open('ssm_FVCOMICM_00001.nc')
+print(ncin)
+#File ssm_FVCOMICM_00001.nc (NC_FORMAT_CLASSIC):
+
+# Bathymetry, salinity, temperature, C to CHL ratio, Dissolved Oxygen, LDOC, RDOC, LPOC, RPOC, 
+# B1, B2, NH4, NO3, LDON, RDON, LPON, RPON,  PO4, TDIC, TALK, pH, pCO2, IAVG, TSS, 
+# SSI, KESS, TURB, PARAD, LEAF, STEM, ROOT, TUBER, EP, SZ, LZ 
+
+# SSM physics only file example:
+ncin <- nc_open('SSM_v43_2018_0001.nc')
+ncin <- nc_open("//nfsdata/SSM_example/HYD/ssm_00115.nc")
+
+ncin2 <- nc_open("~/amps_hydrodynamics/ssm_00115_copy_test.nc")
+ncin <- nc_open("//nfsdata/GOA_example/NEP_grid_5a.nc")
+print(ncin2)
+
+
+ncin3 <- nc_open("~/amps_hydrodynamics/regular_grid_variables_timeave_01252024_ssm_001115_copy_test.nc")
+print(ncin3)
+#File SSM_v43_2018_0001.nc (NC_FORMAT_64BIT):

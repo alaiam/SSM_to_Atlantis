@@ -1,0 +1,71 @@
+#!/bin/bash
+## Activate your environment in my case is GBR_env
+conda activate Salish_sea_env
+cd amps_hydrodynamics
+
+# Set the input and output folder names. This will need to be changed for your system
+#root_folder="~"
+root_folder="~/atlantis/amps_hydrodynamics/"
+#root_folder="//nfsdata/SSM_example/HYD"
+input_folder="$root_folder/"
+copy_folder="$root_folder/copy_Data"
+output_folder="$root_folder/interpolated_data"
+## creating the output and copy folder
+#mkdir -pv "$output_folder"
+#mkdir -pv "$copy_folder"
+
+# Run base grid and function set up
+#python Step1_grid_function_setup_12052023.py
+
+#test using nco to crop ssm files
+# conda install -c conda-forge nco # Install this within Salish_sea_env ??
+
+#for i in $(ls *_copy_test.nc); do
+# ncatted -a long_name,lat,o,c,Latitude -a long_name,lon,o,c,Longitude ssm_00115_copy.nc ssm_00115_copy_test1.nc
+# ncatted -a long_name,lat,o,c,Latitude -a long_name,lon,o,c,Longitude ssm_00116_copy.nc ssm_00116_copy_test1.nc
+# ncatted -a long_name,lat,o,c,Latitude -a long_name,lon,o,c,Longitude ssm_00117_copy.nc ssm_00117_copy_test1.nc
+# ncks X -123.7,-122,47,49.1 ssm_00115_copy_test.nc ssm_00115_copy_test_CROP2.nc
+# ncks X -123.7,-122,47,49.1 ssm_00116_copy_test.nc ssm_00116_copy_test_CROP2.nc
+# ncks X -123.7,-122,47,49.1 ssm_00117_copy_test1.nc ssm_00117_copy_test_CROP2.nc
+# #done
+
+# Loop over the input files in the input folder
+#for i in $(ls *_copy.nc); do
+for i in $(ls ssm_00117_copy.nc); do
+     echo "Working on..." $i
+    #python3.11 Step1Step2_kriging_variables_velocities_12072023_cbsky.py "$i"
+    python3.11 Step1Step2_kriging_variables_velocities_01172024_cbskyam.py "$i"
+done
+
+
+ncks -d latitude,47,49.1,-d longitude,-123.7,-122,regular_grid_variables_timeave_01252024_ssm_001115_copy_test.nc cropped_example_ssm_001115.nc
+
+
+# for input_file in "$input_folder"/*.nc; do
+#     # Get the base name of the input file (without the path or extension)
+#     input_basename=$(basename "$input_file" _copy.nc)
+#     echo "Reading... $input_basename"
+# 
+#     # Set the output file name based on the input file name
+#     output_file="$output_folder/${input_basename}_interpolated.nc"
+#         echo "Saving... $input_basename"
+#         
+#     # Make a copy of the input file with a new name
+#     #cp "$input_file" "$copy_folder/${input_basename}_copy.nc"
+#     
+#     # # create the new input file name    
+#     #new_input_file="$copy_folder/${input_basename}_copy.nc"
+#     #echo $new_input_file
+#   
+#     # Run the Python script with the input and output file names as arguments
+#     # you should use the updated python script that we workend on the other day
+#     #python transfor_variable_2_regulargrid_cb.py "$new_input_file" "$output_file"
+#     #python Step2_kriging_variables_veolicities_12052023.py "$new_input_file" "$output_file"
+#     #python Step1_grid_function_setup_12052023.py
+#     
+#     #python Step2_kriging_variables_velocities_12052023.py 
+# #done # "$input_file" "$output_file"
+# 
+#     python3.11 Step2_kriging_variables_velocities_12052023.py "$input_file" "$output_file"
+# done
+

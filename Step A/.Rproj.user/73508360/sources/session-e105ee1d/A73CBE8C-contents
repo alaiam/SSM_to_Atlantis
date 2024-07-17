@@ -1,0 +1,2 @@
+setwd("/home/atlantis/amps_hydrodynamics")
+setwd("//nfsdata/time_avg/")

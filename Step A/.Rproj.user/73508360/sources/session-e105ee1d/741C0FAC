@@ -1,0 +1,26 @@
+{
+    "id": "741C0FAC",
+    "path": "~/amps_hydrodynamics/StepA_wq.py",
+    "project_path": "StepA_wq.py",
+    "type": "python",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1713491302636.0,
+    "source_on_save": false,
+    "relative_order": 9,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "26,34",
+        "scrollLine": "20"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1714067227,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1714067227,
+    "read_only": false,
+    "read_only_alternatives": []
+}
