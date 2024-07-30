@@ -113,6 +113,14 @@ for d in range(0, siglay_size):
 
 print('Interpolation variables done!')
 
+import matplotlib.pyplot as plt
+plt.figure(figsize=(10, 10))
+plt.pcolormesh(mx, my, new_regular_SZ[350][1], cmap='viridis')
+plt.colorbar(label='Temperature')
+plt.title('Interpolated Temperature')
+plt.xlabel('Longitude')
+plt.ylabel('Latitude')
+plt.show()
 
 # Create a new NetCDF file with the interpolated data
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

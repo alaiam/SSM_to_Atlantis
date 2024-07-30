@@ -17,10 +17,11 @@ import sys
 # Step 1a: set filename here if not using batch script
 
 filename = "/nfsdata/time_avg/velma9_yr2011_wqm_time_avg_crop.nc"
-# filename = "/nfsdata/time_avg/wqm_time_avg_crop.nc"
+filename = "/nfsdata/time_avg/wqm_time_avg_crop.nc"
+
 print(filename)
 
-file_name_output = '/home/atlantis/amps_hydrodynamics/regular_grid_N_velma_2011.nc' 
+file_name_output = '/home/atlantis/amps_hydrodynamics/regular_grid_O2_novelma_2011.nc' 
 print(file_name_output)
 
 
@@ -92,9 +93,7 @@ original_lon = lon
 
 # Create empty arrays to store the interpolated temperature, salinity, and sigma layer values
 
-new_regular_NH4 = np.full((len(original_time), len(
-    original_siglay), len(reg_lon), len(reg_lat)), np.nan)
-new_regular_NO3 = np.full((len(original_time), len(
+new_regular_O2 = np.full((len(original_time), len(
     original_siglay), len(reg_lon), len(reg_lat)), np.nan)
 
 # Loop over each depth layer and interpolate the data onto the regular grid
@@ -103,23 +102,20 @@ for d in range(0, siglay_size):
     
         # Extract data
 
-        org_NH4 = ssm_solution.NH4[t][d].values  # Extract NH4 values
-        org_NO3 = ssm_solution.NO3[t][d].values  # Extract NO3 values
-        
+        org_O2 = ssm_solution.DOXG[t][d].values  # Extract O2 values
+
         # Krigging
-        new_regular_NO3[t][d][:] = kriging_universal(
-            org_NO3, original_lon, original_lat, my, mx)
-        new_regular_NH4[t][d][:] = kriging_universal(
-            org_NH4, original_lon, original_lat, my, mx)
+        new_regular_O2[t][d][:] = kriging_universal(
+            org_O2, original_lon, original_lat, my, mx)
 
 print('Interpolation variables done!')
 
 
 import matplotlib.pyplot as plt
 plt.figure(figsize=(10, 10))
-plt.pcolormesh(mx, my, new_regular_NH4[0][1], cmap='viridis')
-plt.colorbar(label='NH4')
-plt.title('Interpolated NH4')
+plt.pcolormesh(mx, my, new_regular_O2[400][9], cmap='viridis')
+plt.colorbar(label='O2')
+plt.title('Interpolated O2')
 plt.xlabel('Longitude')
 plt.ylabel('Latitude')
 plt.show()
@@ -167,18 +163,11 @@ siglay_var.units = 'sigma_layers'
 siglay_var.standard_name = 'ocean_sigma/general_coordinate'
 siglay_var[:] = original_siglay.astype('float') 
 
-NH4_var = nc.createVariable(
-    'NH4', np.single, ('time', 'sigma_layer', 'longitude','latitude' ))
-NH4_var.units = '[]'
-NH4_var.standard_name = 'sea_water_NH4'
-NH4_var[:] = new_regular_NH4.astype('float')
-
-
-NO3_var = nc.createVariable(
-    'NO3', np.single, ('time', 'sigma_layer', 'longitude', 'latitude'))
-NO3_var.units = '[]'
-NO3_var.standard_name = 'NO3 concentration'
-NO3_var[:] = new_regular_NO3.astype('float')
+O2_var = nc.createVariable(
+    'O2', np.single, ('time', 'sigma_layer', 'longitude','latitude' ))
+O2_var.units = '[]'
+O2_var.standard_name = 'sea_water_O2'
+O2_var[:] = new_regular_O2.astype('float')
 
 
 nc.close()

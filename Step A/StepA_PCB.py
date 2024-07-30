@@ -4,7 +4,6 @@
 ###########
 # import packages
 import numpy as np
-import pandas as pd
 import xarray as xr
 import netCDF4
 import datetime as dt
@@ -16,17 +15,20 @@ import sys
 ###########
 # Step 1a: set filename here if not using batch script
 
-filename = "/nfsdata/time_avg/velma9_yr2011_wqm_time_avg_crop.nc"
-# filename = "/nfsdata/time_avg/wqm_time_avg_crop.nc"
+# filename = "/nfsdata/time_avg/velma9_yr2011_hyd_time_avg_crop.nc"
+# filename = "/nfsdata/time_avg/hyd_time_avg2_crop.nc"
+filename = "/nfsdata/SSM_contaminants/SSM27_2021_PCB/ssm_FVCOMICM_00163.nc"
 print(filename)
 
-file_name_output = '/home/atlantis/amps_hydrodynamics/regular_grid_N_velma_2011.nc' 
+file_name_output = '/home/atlantis/amps_hydrodynamics/regular_grid_PCB_2021.nc' 
 print(file_name_output)
 
 
 # Step 1b: define kriging function
+
 # Create an RTree instance for spatial indexing using pyinterp
 mesh = pyinterp.RTree()
+#(original_values=org_temp, original_lon=original_lon, original_lat=original_lat, new_lon=my, new_lat=mx)
 
 def kriging_universal(original_values, original_lon, original_lat, new_lat, new_lon):
     # Pack the original data into the RTree for spatial indexing (erases previous data)
@@ -35,10 +37,7 @@ def kriging_universal(original_values, original_lon, original_lat, new_lat, new_
     kriging, neighbors = mesh.universal_kriging(np.vstack(( new_lon.ravel(), new_lat.ravel())).T, within=True, k=3*3,
                                                 covariance='matern_12', alpha=1_000_000, num_threads=0)
     return kriging.reshape(new_lon.shape)
-
-
-
-
+print('Function defined!')
 ###########
 # Step 2b: open netCDF file
 # Open the NetCDF file and read the original Salish Sea Model data
@@ -91,35 +90,35 @@ original_lat = lat
 original_lon = lon 
 
 # Create empty arrays to store the interpolated temperature, salinity, and sigma layer values
+new_regular_temp = np.full((len(original_time), len(
+    original_siglay), len(reg_lon), len(reg_lat)), np.nan)
+new_regular_salt = np.full((len(original_time), len(
+    original_siglay), len(reg_lon), len(reg_lat)), np.nan)
 
-new_regular_NH4 = np.full((len(original_time), len(
-    original_siglay), len(reg_lon), len(reg_lat)), np.nan)
-new_regular_NO3 = np.full((len(original_time), len(
-    original_siglay), len(reg_lon), len(reg_lat)), np.nan)
 
 # Loop over each depth layer and interpolate the data onto the regular grid
 for d in range(0, siglay_size):
   for t in range(0, time_size):  # Loop over time steps
-    
-        # Extract data
-
-        org_NH4 = ssm_solution.NH4[t][d].values  # Extract NH4 values
-        org_NO3 = ssm_solution.NO3[t][d].values  # Extract NO3 values
+        org_temp = ssm_solution.temp[t][d].values  # Extract temperature values
+        org_salt = ssm_solution.salinity[t][d].values # Extract salinity values
         
-        # Krigging
-        new_regular_NO3[t][d][:] = kriging_universal(
-            org_NO3, original_lon, original_lat, my, mx)
-        new_regular_NH4[t][d][:] = kriging_universal(
-            org_NH4, original_lon, original_lat, my, mx)
+        #Krigging
+        new_regular_temp[t][d][:] = kriging_universal(
+            org_temp, original_lon, original_lat, my, mx)
+        new_regular_salt[t][d][:] = kriging_universal(
+            org_salt, original_lon, original_lat, my, mx)
 
 print('Interpolation variables done!')
 
+# org_salt = ssm_solution.salinity[1][4].values
+# new_regular_salt_test_l = kriging_universal(
+# org_salt, original_lon, original_lat, my, mx)
 
 import matplotlib.pyplot as plt
 plt.figure(figsize=(10, 10))
-plt.pcolormesh(mx, my, new_regular_NH4[0][1], cmap='viridis')
-plt.colorbar(label='NH4')
-plt.title('Interpolated NH4')
+plt.pcolormesh(mx, my, new_regular_temp[350][1], cmap='viridis')
+plt.colorbar(label='Temperature')
+plt.title('Interpolated Temperature')
 plt.xlabel('Longitude')
 plt.ylabel('Latitude')
 plt.show()
@@ -167,19 +166,18 @@ siglay_var.units = 'sigma_layers'
 siglay_var.standard_name = 'ocean_sigma/general_coordinate'
 siglay_var[:] = original_siglay.astype('float') 
 
-NH4_var = nc.createVariable(
-    'NH4', np.single, ('time', 'sigma_layer', 'longitude','latitude' ))
-NH4_var.units = '[]'
-NH4_var.standard_name = 'sea_water_NH4'
-NH4_var[:] = new_regular_NH4.astype('float')
+temp_var = nc.createVariable(
+    'temp', np.single, ('time', 'sigma_layer', 'longitude','latitude' ))
+temp_var.units = 'degrees_C'
+temp_var.standard_name = 'sea_water_temperature'
+temp_var[:] = new_regular_temp.astype('float')
 
 
-NO3_var = nc.createVariable(
-    'NO3', np.single, ('time', 'sigma_layer', 'longitude', 'latitude'))
-NO3_var.units = '[]'
-NO3_var.standard_name = 'NO3 concentration'
-NO3_var[:] = new_regular_NO3.astype('float')
-
+salt_var = nc.createVariable(
+    'salinity', np.single, ('time', 'sigma_layer', 'longitude', 'latitude'))
+salt_var.units = '1e-3'
+salt_var.standard_name = 'sea_water_salinity'
+salt_var[:] = new_regular_salt.astype('float')
 
 nc.close()
 print('New ROMSgrid NetCDF file created!')
