@@ -17,9 +17,10 @@ import sys
 # Step 1a: set filename here if not using batch script
 
 filename = "/nfsdata/time_avg/velma9_yr2011_wqm_time_avg_crop.nc"
+filename = "/nfsdata/time_avg/velma9_t2.63_year2095_wqm_time_avg_crop.nc"
 print(filename)
 
-file_name_output = '/home/atlantis/amps_hydrodynamics/regular_grid_Z_velma_2011.nc' 
+file_name_output = '/home/atlantis/amps_hydrodynamics/regular_grid_Z_velma_2095.nc' 
 print(file_name_output)
 
 
@@ -181,3 +182,4 @@ LZ_var[:] = new_regular_LZ.astype('float')
 
 nc.close()
 print('New ROMSgrid NetCDF file created!')
+
