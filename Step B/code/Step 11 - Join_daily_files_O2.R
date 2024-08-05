@@ -2,8 +2,8 @@ library(ncdf4)
 library(here)
 
 # Variables to change #
-year = 2011
-velma = F
+year = 2095
+velma = T
 
 # Set path
 if (velma){

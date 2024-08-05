@@ -16,12 +16,12 @@ import sys
 ###########
 # Step 1a: set filename here if not using batch script
 
-filename = "/nfsdata/time_avg/velma9_yr2011_wqm_time_avg_crop.nc"
-filename = "/nfsdata/time_avg/velma9_t2.63_year2095_wqm_time_avg_crop.nc"
-# filename = "/nfsdata/time_avg/wqm_time_avg_crop.nc"
+# filename = "/nfsdata/time_avg/velma9_yr2011_wqm_time_avg_crop.nc"
+# filename = "/nfsdata/time_avg/velma9_t2.63_year2095_wqm_time_avg_crop.nc"
+filename = "/nfsdata/time_avg/wqm_time_avg_crop.nc"
 print(filename)
 
-file_name_output = '/home/atlantis/amps_hydrodynamics/regular_grid_D_velma_2095.nc' 
+file_name_output = '/home/atlantis/amps_hydrodynamics/regular_grid_PON_novelma_2011.nc' 
 print(file_name_output)
 
 
@@ -92,10 +92,10 @@ time_size = len(original_time)
 original_lat = lat
 original_lon = lon 
 
-# Create empty arrays to store the interpolated RDON, LDON
-new_regular_LDON = np.full((len(original_time), len(
+# Create empty arrays to store the interpolated RPON, LPON
+new_regular_LPON = np.full((len(original_time), len(
     original_siglay), len(reg_lon), len(reg_lat)), np.nan)
-new_regular_RDON = np.full((len(original_time), len(
+new_regular_RPON = np.full((len(original_time), len(
     original_siglay), len(reg_lon), len(reg_lat)), np.nan)
 
 # Loop over each depth layer and interpolate the data onto the regular grid
@@ -103,14 +103,14 @@ for d in range(0, siglay_size):
   for t in range(0, time_size):  # Loop over time steps
     
         # Extract data
-        org_LDON = ssm_solution.LDON[t][d].values  # Extract LDON values
-        org_RDON = ssm_solution.RDON[t][d].values  # Extract RDON values
+        org_LPON = ssm_solution.LPON[t][d].values  # Extract LPON values
+        org_RPON = ssm_solution.RPON[t][d].values  # Extract RPON values
         
         # Krigging
-        new_regular_LDON[t][d][:] = kriging_universal(
-            org_LDON, original_lon, original_lat, my, mx)
-        new_regular_RDON[t][d][:] = kriging_universal(
-            org_RDON, original_lon, original_lat, my, mx)
+        new_regular_LPON[t][d][:] = kriging_universal(
+            org_LPON, original_lon, original_lat, my, mx)
+        new_regular_RPON[t][d][:] = kriging_universal(
+            org_RPON, original_lon, original_lat, my, mx)
 
 
 print('Interpolation variables done!')
@@ -159,17 +159,17 @@ siglay_var.units = 'sigma_layers'
 siglay_var.standard_name = 'ocean_sigma/general_coordinate'
 siglay_var[:] = original_siglay.astype('float') 
 
-RDON_var = nc.createVariable(
-    'RDON', np.single, ('time', 'sigma_layer', 'longitude', 'latitude'))
-RDON_var.units = 'gN.m-3'
-RDON_var.standard_name = 'Concentration RDON'
-RDON_var[:] = new_regular_RDON.astype('float')
+RPON_var = nc.createVariable(
+    'RPON', np.single, ('time', 'sigma_layer', 'longitude', 'latitude'))
+RPON_var.units = 'gN.m-3'
+RPON_var.standard_name = 'Concentration RPON'
+RPON_var[:] = new_regular_RPON.astype('float')
 
-LDON_var = nc.createVariable(
-    'LDON', np.single, ('time', 'sigma_layer', 'longitude', 'latitude'))
-LDON_var.units = 'gN.m-3'
-LDON_var.standard_name = 'Concentration LDON'
-LDON_var[:] = new_regular_LDON.astype('float')
+LPON_var = nc.createVariable(
+    'LPON', np.single, ('time', 'sigma_layer', 'longitude', 'latitude'))
+LPON_var.units = 'gN.m-3'
+LPON_var.standard_name = 'Concentration LPON'
+LPON_var[:] = new_regular_LPON.astype('float')
 
 
 
