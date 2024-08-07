@@ -12,6 +12,7 @@ library(rbgm)
 library(sf) 
 library(tidync)
 library(tidyverse)
+library(here)
 
 select <- dplyr::select
 map <- purrr::map
@@ -20,17 +21,29 @@ options(dplyr.summarise.inform=FALSE)
 
 ###########################################################################
 # Path and names definition
+setwd(here())
 year = 2011
-path        <- "/home/atlantis/SSM_to_Atlantis/step_B/"
-output_path <- paste0("/home/atlantis/SSM_to_Atlantis/step_B/output_",year,"_N/")
+path        <- paste0(here(), "/Step B/")
+input_path <- paste0(here(),"/Step A/File_regular_grid/")
+
+# Velma?
+Velma = T
+if (Velma){
+  filename <- paste0("VELMA/",year,"/regular_grid_N_velma_",year,".nc")
+  output_path <- paste0("/home/atlantis/amps_hydrodynamics/Step B/output_VELMA_",year,"_N/")
+  
+}else{
+  filename <- paste0("No_VELMA/regular_grid_N_novelma_",year,".nc")
+  output_path <- paste0("/home/atlantis/amps_hydrodynamics/Step B/output_No_VELMA_",year,"_N/")
+}
+
 if (!file.exists(output_path)){dir.create(output_path)}
-setwd("/home/atlantis/SSM_to_Atlantis/")
-filename <- paste0("regular_grid_N_",year,".nc")
+
 
 ###########################################################################
 # Read data ROMS data
-roms <- tidync(paste(path,"data/",filename, sep = ""))
-box_composition <- read.csv("code/box_composition.csv")
+roms <- tidync(paste0(input_path,filename))
+box_composition <- read.csv(paste0(path,"code/box_composition.csv"))
 
 ###########################################################################
 
