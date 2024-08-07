@@ -1,8 +1,20 @@
 library(ncdf4)
+library(here)
 
+# Variables to change #
 year = 2011
-path <- paste0("/home/atlantis/SSM_to_Atlantis/step_B/output_",year,"_Z")
+velma = T
+
+# Set path
+if (velma){
+  path <- paste0(here(), "/Step B/output_VELMA_",year,"_Z")
+}else{
+  path <- paste0(here(), "/Step B/output_No_VELMA_",year,"_Z")
+}
 setwd(path)
+
+
+
 list.file <- sort(list.files(path))
 
 
@@ -18,7 +30,7 @@ atlantis_input_SZ <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1)
 atlantis_input_LZ <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1),box,length(time)))
 liste <- sort(list.file)
 for (i in 1:length(list.file)){
-  nc <- nc_open(paste0("Zoo_var_Atlantis_Z_",i,".nc"))
+  nc <- nc_open(paste0("Zoo_Atlantis_",i,".nc"))
   pdt <- ncvar_get(nc, varid = "t")/60/60+1
   atlantis_input_SZ[,,i]      <- ncvar_get(nc, varid = "SZ")
   atlantis_input_LZ[,,i]      <- ncvar_get(nc, varid = "LZ")
@@ -50,7 +62,11 @@ SZ <- ncvar_def("Micro_Zoo_N", "double", dim = list( z_dim,b_dim, t_dim),
 
 
 # Create a NetCDF file
-nc_filename <- "/home/atlantis/psatlantismodel/BGC/pugetsound_SSM_Atlantis_SZ_2011.nc"
+if (velma){
+  nc_filename <- paste0(here(), "/pugetsound_SSM_Atlantis_SZ_velma_",year,".nc")
+}else{
+  nc_filename <- paste0(here(), "/pugetsound_SSM_Atlantis_SZ_","2011.nc")
+}
 nc <- nc_create(nc_filename, vars = list(SZ = SZ))
 
 # Put dimensions and variables in the NetCDF file
@@ -95,7 +111,11 @@ MZ <- ncvar_def("Meso_Zoo_N", "double", dim = list( z_dim,b_dim, t_dim),
 
 
 # Create a NetCDF file
-nc_filename <- "/home/atlantis/psatlantismodel/BGC/pugetsound_SSM_Atlantis_MZ_2011.nc"
+if (velma){
+  nc_filename <- paste0(here(), "/pugetsound_SSM_Atlantis_MZ_velma_",year,".nc")
+}else{
+  nc_filename <- paste0(here(), "/pugetsound_SSM_Atlantis_MZ_","2011.nc")
+}
 nc <- nc_create(nc_filename, vars = list(MZ = MZ))
 
 # Put dimensions and variables in the NetCDF file
@@ -143,7 +163,11 @@ LZ <- ncvar_def("Lrg_Zoo_N", "double", dim = list( z_dim,b_dim, t_dim),
 
 
 # Create a NetCDF file
-nc_filename <- "/home/atlantis/psatlantismodel/BGC/pugetsound_SSM_Atlantis_LZ_2011.nc"
+if (velma){
+  nc_filename <- paste0(here(), "/pugetsound_SSM_Atlantis_LZ_velma_",year,".nc")
+}else{
+  nc_filename <- paste0(here(), "/pugetsound_SSM_Atlantis_LZ_","2011.nc")
+}
 nc <- nc_create(nc_filename, vars = list(LZ = LZ))
 
 # Put dimensions and variables in the NetCDF file

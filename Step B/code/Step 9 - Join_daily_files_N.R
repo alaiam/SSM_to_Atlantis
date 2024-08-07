@@ -1,8 +1,20 @@
 library(ncdf4)
+library(here)
 
+# Variables to change #
 year = 2011
-path <- paste0("/home/atlantis/SSM_to_Atlantis/step_B/output_",year,"_N")
+velma = T
+
+# Set path
+if (velma){
+  path <- paste0(here(), "/Step B/output_VELMA_",year,"_N")
+}else{
+  path <- paste0(here(), "/Step B/output_No_VELMA_",year,"_N")
+}
 setwd(path)
+
+
+
 list.file <- sort(list.files(path))
 
 
@@ -18,7 +30,7 @@ atlantis_input_NO3 <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1
 atlantis_input_NH4 <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1),box,length(time)))
 liste <- sort(list.file)
 for (i in 1:length(list.file)){
-  nc <- nc_open(paste0("N_var_Atlantis_",i,".nc"))
+  nc <- nc_open(paste0("N_Atlantis_",i,".nc"))
   pdt <- ncvar_get(nc, varid = "t")/60/60+1
   atlantis_input_NO3[,,i]      <- ncvar_get(nc, varid = "NO3")
   atlantis_input_NH4[,,i]      <- ncvar_get(nc, varid = "NH4")
@@ -43,7 +55,11 @@ NO3 <- ncvar_def("NO3", "double", dim = list( z_dim,b_dim, t_dim),
 
 
 # Create a NetCDF file
-nc_filename <- "/home/atlantis/psatlantismodel/BGC/pugetsound_SSM_Atlantis_NO3_2011.nc"
+if (velma){
+  nc_filename <- paste0(here(), "/pugetsound_SSM_Atlantis_NO3_velma_",year,".nc")
+}else{
+  nc_filename <- paste0(here(), "/pugetsound_SSM_Atlantis_NO3_","2011.nc")
+}
 nc <- nc_create(nc_filename, vars = list(NO3 = NO3))
 
 # Put dimensions and variables in the NetCDF file
@@ -86,7 +102,11 @@ NH4 <- ncvar_def("NH3", "double", dim = list( z_dim,b_dim, t_dim),
 
 
 # Create a NetCDF file
-nc_filename <- "/home/atlantis/psatlantismodel/BGC/pugetsound_SSM_Atlantis_NH4_2011.nc"
+if (velma){
+  nc_filename <- paste0(here(), "/pugetsound_SSM_Atlantis_NH4_velma_",year,".nc")
+}else{
+  nc_filename <- paste0(here(), "/pugetsound_SSM_Atlantis_NH4_","2011.nc")
+}
 nc <- nc_create(nc_filename, vars = list(NH4 = NH4))
 
 # Put dimensions and variables in the NetCDF file

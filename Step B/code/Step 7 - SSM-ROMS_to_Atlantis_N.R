@@ -13,6 +13,7 @@ library(sf)
 library(tidync)
 library(tidyverse)
 library(here)
+library(doParallel)
 
 select <- dplyr::select
 map <- purrr::map
@@ -68,7 +69,7 @@ layer_thickness <- c(5,20,25,50,50,200)
 ############################################################################################
 step_file <- 1:730 #Days to divide the total files
 
-files <- sub("N_var_Atlantis_", "", list.files("output_N"))
+files <- sub("N_Atlantis_", "", list.files(output_path))
 files <- sort(as.numeric(sub(".nc", "", files)))
 out <- (1:730)[!1:730 %in% files]
 step_file <- out
@@ -161,10 +162,10 @@ foreach(days = step_file) %dopar%{
   b_var <- ncvar_def("b", "int", dim = list(b_dim), units = "boxNum", longname = "b")
   t_var <- ncvar_def("t", "double", dim = list(t_dim), units = "seconds since 2095-01-01", longname = "t")
   NH4 <- ncvar_def("NH4", "double", dim = list( z_dim,b_dim, t_dim),
-                   units = "mgN", missval = NA, longname = "NH4")
+                   units = "mgN.m-3", missval = NA, longname = "NH4")
   NO3 <- ncvar_def("NO3", "double", dim = list( z_dim,b_dim, t_dim),
-                   units = "g.L-1", missval = NA, longname = "NO3")
-  output_filename = paste0("N_var_Atlantis_", days, ".nc")
+                   units = "mgN.m-3", missval = NA, longname = "NO3")
+  output_filename = paste0("N_Atlantis_", days, ".nc")
   # Create a NetCDF file
   nc_filename <- paste0(output_path, output_filename)
   nc <- nc_create(nc_filename, vars = list(NH4 = NH4, NO3 = NO3))
@@ -202,5 +203,5 @@ end_time <- Sys.time()
 
 
 # for (i in 1:730){
-#   file.rename(paste0("output_N/Phyto_var_Atlantis_B_",i,".nc"), paste0("output_N/N_var_Atlantis_",i,".nc"))
+#   file.rename(paste0("Step B/output_VELMA_2011_N/N_var_Atlantis_",i,".nc"), paste0("Step B/output_VELMA_2011_N/N_Atlantis_",i,".nc"))
 # }
