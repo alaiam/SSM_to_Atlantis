@@ -20,17 +20,29 @@ options(dplyr.summarise.inform=FALSE)
 
 ###########################################################################
 # Path and names definition
+setwd(here())
 year = 2011
-path        <- "/home/atlantis/SSM_to_Atlantis/step_B"
-output_path <- paste0("/home/atlantis/SSM_to_Atlantis/step_B/output_",year,"_B/")
+path        <- paste0(here(), "/Step B/")
+input_path <- paste0(here(),"/Step A/File_regular_grid/")
+
+# Velma?
+Velma = T
+if (Velma){
+  filename <- paste0("VELMA/",year,"/regular_grid_B_velma_",year,".nc")
+  output_path <- paste0("/home/atlantis/amps_hydrodynamics/Step B/output_VELMA_",year,"_B/")
+  
+}else{
+  filename <- paste0("No_VELMA/regular_grid_B_novelma_",year,".nc")
+  output_path <- paste0("/home/atlantis/amps_hydrodynamics/Step B/output_No_VELMA_",year,"_B/")
+}
+
 if (!file.exists(output_path)){dir.create(output_path)}
-setwd("/home/atlantis/SSM_to_Atlantis/")
-filename <- paste0("regular_grid_B_",year,".nc")
+
 
 ###########################################################################
 # Read data ROMS data
-roms <- tidync(paste(path,"data/",filename, sep = ""))
-box_composition <- read.csv("code/box_composition.csv")
+roms <- tidync(paste0(input_path,filename))
+box_composition <- read.csv(paste0(path,"code/box_composition.csv"))
   
 ###########################################################################
 
@@ -55,7 +67,7 @@ layer_thickness <- c(5,20,25,50,50,200)
 ############################################################################################
 step_file <- 1:730 #Days to divide the total files
 
-files <- sub("Phyto_var_Atlantis_B_", "", list.files("output_B"))
+files <- sub("Phyto_Atlantis_", "", list.files(output_path))
 files <- sort(as.numeric(sub(".nc", "", files)))
 out <- (1:730)[!1:730 %in% files]
 step_file <- out
@@ -119,6 +131,7 @@ for (i in 0:(box-1)){
           }else{
             # all.layers_B1[j] <- (mean(subset$B1, na.rm = T)*area[i+1,1]*layer_thickness[j]*0.176*1000)[[1]] #redfield ratio
             # all.layers_B2[j] <- (mean(subset$B2, na.rm = T)*area[i+1,1]*layer_thickness[j]*0.176*1000)[[1]] #redfield ratio
+            # From gC.m-3 to mgN.m-3
             all.layers_B1[j] <- (mean(subset$B1, na.rm = T)*0.176*1000)[[1]] #redfield ratio
             all.layers_B2[j] <- (mean(subset$B2, na.rm = T)*0.176*1000)[[1]] #redfield ratio
           }
@@ -151,7 +164,7 @@ B1 <- ncvar_def("B1", "double", dim = list( z_dim,b_dim, t_dim),
                          units = "mgN", missval = NA, longname = "B1")
 B2 <- ncvar_def("B2", "double", dim = list( z_dim,b_dim, t_dim),
                       units = "g.L-1", missval = NA, longname = "B2")
-output_filename = paste0("Phyto_var_Atlantis_B_", days, ".nc")
+output_filename = paste0("Phyto_Atlantis_", days, ".nc")
 # Create a NetCDF file
 nc_filename <- paste0(output_path, output_filename)
 nc <- nc_create(nc_filename, vars = list(B1 = B1, B2 = B2))
