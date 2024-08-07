@@ -498,7 +498,7 @@ plot_SSM <- function(varname){
                  "(mg N.m-3)")
   
   atlantis.name <- c("salinity","temperature",
-                     "NO3", "NH4", 
+                     "NO3", "NH3", 
                      "Micro_Zoo_N", "Lrg_Zoo_N", "Meso_Zoo_N", "Sm_Phyto_N", "Lrg_Phyto_N",
                      "Oxygen","Lab_Det_N","Ref_Det_N",
                      "DON")

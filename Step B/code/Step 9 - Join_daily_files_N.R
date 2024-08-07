@@ -3,7 +3,7 @@ library(here)
 
 # Variables to change #
 year = 2011
-velma = T
+velma = F
 
 # Set path
 if (velma){
