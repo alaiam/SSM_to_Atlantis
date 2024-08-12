@@ -27,7 +27,7 @@ path        <- "/home/atlantis/amps_hydrodynamics/Step B/"
 input_path <- paste0("/home/atlantis/amps_hydrodynamics/Step A/File_regular_grid/")
 
 # Velma?
-Velma = F
+Velma = T
 if (Velma){
   filename <- paste0("VELMA/",year,"/regular_grid_DON_velma_",year,".nc")
   output_path <- paste0("/home/atlantis/amps_hydrodynamics/Step B/output_VELMA_",year,"_DON/")

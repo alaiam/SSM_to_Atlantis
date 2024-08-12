@@ -8,7 +8,7 @@ library(here)
 setwd(here())
 
 
-plot_SSM_physics <- function(varname, unit = "", varid = varname){
+plot_SSM_physics <- function(varname, unit = "", varid = varname, title = title){
   
   if (varname == "salinity"){
     ylab = "Salinity (g.L-1)"
@@ -152,129 +152,105 @@ plot_SSM_physics <- function(varname, unit = "", varid = varname){
   
   # pdf(width=9,height = 4.5)
   # Configuration de la disposition des graphiques et ajustement des marges globales
-  par(mfrow = c(1, 2), oma = c(2.5, 2.5, 2, 1), mar = c(2, 2, 2, 1))
+  par(mfrow = c(3, 2), oma = c(2.5, 2.5, 2, 1), mar = c(2, 2, 2, 1))
   
   # Définir les limites de l'axe y
   abs_min <- min(c(min_var_roms_1, min_var_1, min_var_velma_1, min_var_roms_5, min_var_5, min_var_velma_5))
-  abs_max <- max(c(max_var_roms_1, max_var_1, max_var_velma_1, max_var_roms_5, max_var_5, max_var_velma_5))
+  abs_max <- max(c(max_var_roms_1, max_var_1, max_var_velma_1, max_var_roms_5, max_var_5, max_var_velma_5))*1.2
   
   # Surface layer
-  plot(1:730/2, mean_var_roms_1, type = "l", col = "#FF4500", lwd = 2, xlab = "",
+  plot(1:730/2, mean_var_roms_1, type = "l", col = "#FF4500", lwd = 1.5, xlab = "",
        ylab = "", main = "Layer 1 (0-5m)", ylim = c(abs_min, abs_max), axes = FALSE)
   axis(1, at = c(-100,0,100,200,300,400))
   axis(2, at = seq(round(abs_min)/2,round(abs_max)*2, (round(abs_max)-round(abs_min))/8))
   # box(col = )
-  lines(1:730/2, mean_var_1, col = "#1E3A8A", lwd = 2)
-  lines(1:730/2, mean_var_velma_1, col = "#ADFF2F", lwd = 2)
+  lines(1:730/2, mean_var_1, col = "#1E3A8A", lwd = 1.5)
+  lines(1:730/2, mean_var_velma_1, col = "#ADFF2F", lwd = 1.5)
   grid(nx = NULL, ny = NULL, col = "lightgray", lty = "dotted")
-  legend("topleft", legend = c("ROMS", "SSM", "SSM-VELMA"), col = c("#FF4500", "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 2, bty = "n")
+  legend("topleft", legend = c("ROMS", "SSM", "SSM-VELMA"), col = c("#FF4500", "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 1.5, bty = "n")
+  legend("topright", legend = c("AVERAGE"), col = c( "white"), lty = 1, lwd = 1.5, bty = "n")
   
   # Depth layer
-  plot(1:730/2, mean_var_roms_5, type = "l", col = "#FF4500", lwd = 2, xlab = "",
+  plot(1:730/2, mean_var_roms_5, type = "l", col = "#FF4500", lwd = 1.5, xlab = "",
        ylab = "", main = "Layer 5 (100-150 m)", ylim = c(abs_min, abs_max), axes = FALSE)
   axis(1, at = c(-100,0,100,200,300,400))
   axis(2, at = seq(round(abs_min)/2,round(abs_max)*2, (round(abs_max)-round(abs_min))/8), labels = FALSE)
   
   # box(col = )
-  lines(1:730/2, mean_var_5, col = "#1E3A8A", lwd = 2)
-  lines(1:730/2, mean_var_velma_5, col = "#ADFF2F", lwd = 2)
+  lines(1:730/2, mean_var_5, col = "#1E3A8A", lwd = 1.5)
+  lines(1:730/2, mean_var_velma_5, col = "#ADFF2F", lwd = 1.5)
   grid(nx = NULL, ny = NULL, col = "lightgray", lty = "dotted")
-  legend("topleft", legend = c("ROMS", "SSM", "SSM-VELMA"), col = c("#FF4500", "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 2, bty = "n")
+  legend("topleft", legend = c("ROMS", "SSM", "SSM-VELMA"), col = c("#FF4500", "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 1.5, bty = "n")
   
   # Ajouter les étiquettes des axes globaux
   mtext("Days", side = 1, outer = TRUE, line = 1, col = , cex = 1.2)
   mtext(ylab, side = 2, outer = TRUE, line = 1, col = , cex = 1.2)
-  # dev.off()
-  
-  
-  
+  mtext(title, side = 3, outer = TRUE, line = 0, col = , cex = 1.2)
+  legend("topright", legend = c("AVERAGE"), col = c( "white"), lty = 1, lwd = 1.5, bty = "n")
   
   
   #######################################################
   ######################### MAX ########################
   #######################################################
   
-  # pdf(width=9,height = 4.5)
-  # Configuration de la disposition des graphiques et ajustement des marges globales
-  par(mfrow = c(1, 2), oma = c(2.5, 2.5, 2, 1), mar = c(2, 2, 2, 1))
-  
-  # Définir les limites de l'axe y
-  # abs_min <- min(c(max_var_roms_1, max_var_1, max_var_velma_1, max_var_roms_5, max_var_5, max_var_velma_5))
-  # abs_max <- max(c(max_var_roms_1, max_var_1, max_var_velma_1, max_var_roms_5, max_var_5, max_var_velma_5))
-  
   # Surface layer
-  plot(1:730/2, max_var_roms_1, type = "l", col = "#FF4500", lwd = 2, xlab = "",
+  plot(1:730/2, max_var_roms_1, type = "l", col = "#FF4500", lwd = 1.5, xlab = "",
        ylab = "", main = "Layer 1 (0-5m)", ylim = c(abs_min, abs_max), axes = FALSE)
   axis(1, at = c(-100, 0,100,200,300,400))
   axis(2, at = seq(round(abs_min)/2,round(abs_max)*2, (round(abs_max)-round(abs_min))/8))
   # box(col = )
-  lines(1:730/2, max_var_1, col = "#1E3A8A", lwd = 2)
-  lines(1:730/2, max_var_velma_1, col = "#ADFF2F", lwd = 2)
+  lines(1:730/2, max_var_1, col = "#1E3A8A", lwd = 1.5)
+  lines(1:730/2, max_var_velma_1, col = "#ADFF2F", lwd = 1.5)
   grid(nx = NULL, ny = NULL, col = "lightgray", lty = "dotted")
-  legend("topleft", legend = c("ROMS", "SSM", "SSM-VELMA"), col = c("#FF4500", "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 2, bty = "n")
+  legend("topleft", legend = c("ROMS", "SSM", "SSM-VELMA"), col = c("#FF4500", "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 1.5, bty = "n")
+  legend("topright", legend = c("MAXIMUM"), col = c( "white"), lty = 1, lwd = 1.5, bty = "n")
   
   # Depth layer
-  plot(1:730/2, max_var_roms_5, type = "l", col = "#FF4500", lwd = 2, xlab = "",
+  plot(1:730/2, max_var_roms_5, type = "l", col = "#FF4500", lwd = 1.5, xlab = "",
        ylab = "", main = "Layer 5 (100-150 m)", ylim = c(abs_min, abs_max), axes = FALSE)
   axis(1, at = c(-100,0,100,200,300,400))
   axis(2, at = seq(round(abs_min)/2,round(abs_max)*2, (round(abs_max)-round(abs_min))/8), labels = FALSE)
   
   # box(col = )
-  lines(1:730/2, max_var_5, col = "#1E3A8A", lwd = 2)
-  lines(1:730/2, max_var_velma_5, col = "#ADFF2F", lwd = 2)
+  lines(1:730/2, max_var_5, col = "#1E3A8A", lwd = 1.5)
+  lines(1:730/2, max_var_velma_5, col = "#ADFF2F", lwd = 1.5)
   grid(nx = NULL, ny = NULL, col = "lightgray", lty = "dotted")
-  legend("topleft", legend = c("ROMS", "SSM", "SSM-VELMA"), col = c("#FF4500", "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 2, bty = "n")
-  
-  # Ajouter les étiquettes des axes globaux
-  mtext("Days", side = 1, outer = TRUE, line = 1, col = , cex = 1.2)
-  mtext(ylab, side = 2, outer = TRUE, line = 1, col = , cex = 1.2)
-  
-  
-  
-  
-  
+  legend("topleft", legend = c("ROMS", "SSM", "SSM-VELMA"), col = c("#FF4500", "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 1.5, bty = "n")
+  legend("topright", legend = c("MAXIMUM"), col = c( "white"), lty = 1, lwd = 1.5, bty = "n")
+
   
   #######################################################
   ######################### MIN ########################
   #######################################################
   
-  # pdf(width=9,height = 4.5)
-  # Configuration de la disposition des graphiques et ajustement des marges globales
-  par(mfrow = c(1, 2), oma = c(2.5, 2.5, 2, 1), mar = c(2, 2, 2, 1))
-  
-  # Définir les limites de l'axe y
-  # abs_min <- min(c(min_var_roms_1, min_var_1, min_var_velma_1, min_var_roms_5, min_var_5, min_var_velma_5))
-  # abs_max <- max(c(min_var_roms_1, min_var_1, min_var_velma_1, min_var_roms_5, min_var_5, min_var_velma_5))
-  
   # Surface layer
-  plot(1:730/2, min_var_roms_1, type = "l", col = "#FF4500", lwd = 2, xlab = "",
+  plot(1:730/2, min_var_roms_1, type = "l", col = "#FF4500", lwd = 1.5, xlab = "",
        ylab = "", main = "Layer 1 (0-5m)", ylim = c(abs_min, abs_max), axes = FALSE)
   axis(1, at = c(-100, 0,100,200,300,400))
   axis(2, at = seq(round(abs_min)/2,round(abs_max)*2, (round(abs_max)-round(abs_min))/8))
   # box(col = )
-  lines(1:730/2, min_var_1, col = "#1E3A8A", lwd = 2)
-  lines(1:730/2, min_var_velma_1, col = "#ADFF2F", lwd = 2)
+  lines(1:730/2, min_var_1, col = "#1E3A8A", lwd = 1.5)
+  lines(1:730/2, min_var_velma_1, col = "#ADFF2F", lwd = 1.5)
   grid(nx = NULL, ny = NULL, col = "lightgray", lty = "dotted")
-  legend("topleft", legend = c("ROMS", "SSM", "SSM-VELMA"), col = c("#FF4500", "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 2, bty = "n")
+  legend("topleft", legend = c("ROMS", "SSM", "SSM-VELMA"), col = c("#FF4500", "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 1.5, bty = "n")
+  legend("topright", legend = c("MINIMUM"), col = c( "white"), lty = 1, lwd = 1.5, bty = "n")
   
   # Depth layer
-  plot(1:730/2, min_var_roms_5, type = "l", col = "#FF4500", lwd = 2, xlab = "",
+  plot(1:730/2, min_var_roms_5, type = "l", col = "#FF4500", lwd = 1.5, xlab = "",
        ylab = "", main = "Layer 5 (100-150 m)", ylim = c(abs_min, abs_max), axes = FALSE)
   axis(1, at = c(-100,0,100,200,300,400))
   axis(2, at = seq(round(abs_min)/2,round(abs_max)*2, (round(abs_max)-round(abs_min))/8), labels = FALSE)
   
   # box(col = )
-  lines(1:730/2, min_var_5, col = "#1E3A8A", lwd = 2)
-  lines(1:730/2, min_var_velma_5, col = "#ADFF2F", lwd = 2)
+  lines(1:730/2, min_var_5, col = "#1E3A8A", lwd = 1.5)
+  lines(1:730/2, min_var_velma_5, col = "#ADFF2F", lwd = 1.5)
   grid(nx = NULL, ny = NULL, col = "lightgray", lty = "dotted")
-  legend("topleft", legend = c("ROMS", "SSM", "SSM-VELMA"), col = c("#FF4500", "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 2, bty = "n")
+  legend("topleft", legend = c("ROMS", "SSM", "SSM-VELMA"), col = c("#FF4500", "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 1.5, bty = "n")
+  legend("topright", legend = c("MINIMUM"), col = c( "white"), lty = 1, lwd = 1.5, bty = "n")
   
-  # Ajouter les étiquettes des axes globaux
-  mtext("Days", side = 1, outer = TRUE, line = 1, col = , cex = 1.2)
-  mtext(ylab, side = 2, outer = TRUE, line = 1, col = , cex = 1.2)
   
 }
-plot_SSM_wq <- function(varname, unit = "", varid = varname){
+plot_SSM_wq <- function(varname, unit = "", varid = varname, title = title){
   
   ylab = paste0(varname, " ", unit)
   file_SSM <- paste0("Step B/Final outputs/noVELMA/pugetsound_SSM_Atlantis_",varname,"_2011.nc")
@@ -380,36 +356,39 @@ plot_SSM_wq <- function(varname, unit = "", varid = varname){
   
   # pdf(width=9,height = 4.5)
   # Configuration de la disposition des graphiques et ajustement des marges globales
-  par(mfrow = c(1, 2), oma = c(2.5, 2.5, 2, 1), mar = c(2, 2, 2, 1))
+  par(mfrow = c(3, 2), oma = c(2.5, 2.5, 2, 1), mar = c(2, 2, 2, 1))
   
   # Définir les limites de l'axe y
   abs_min <- min(c(min_var_1, min_var_velma_1, min_var_5, min_var_velma_5))
-  abs_max <- max(c(max_var_1, max_var_velma_1, max_var_5, max_var_velma_5))
+  abs_max <- max(c(max_var_1, max_var_velma_1, max_var_5, max_var_velma_5))*1.2
   
   # Surface layer
-  plot(1:730/2, mean_var_1, type = "l", col = "#1E3A8A", lwd = 2, xlab = "",
+  plot(1:730/2, mean_var_1, type = "l", col = "#1E3A8A", lwd = 1.5, xlab = "",
        ylab = "", main = "Layer 1 (0-5m)", ylim = c(abs_min, abs_max), axes = FALSE)
   axis(1, at = c(-100,0,100,200,300,400))
   axis(2, at = seq(round(abs_min)/2,round(abs_max)*2, (round(abs_max)-round(abs_min))/8))
   # box(col = )
-  lines(1:730/2, mean_var_velma_1, col = "#ADFF2F", lwd = 2)
+  lines(1:730/2, mean_var_velma_1, col = "#ADFF2F", lwd = 1.5)
   grid(nx = NULL, ny = NULL, col = "lightgray", lty = "dotted")
-  legend("topleft", legend = c("SSM", "SSM-VELMA"), col = c("#1E3A8A", "#ADFF2F"), lty = 1, lwd = 2, bty = "n")
+  legend("topleft", legend = c("SSM", "SSM-VELMA"), col = c("#1E3A8A", "#ADFF2F"), lty = 1, lwd = 1.5, bty = "n")
+  legend("topright", legend = c("AVERAGE"), col = c( "white"), lty = 1, lwd = 1.5, bty = "n")
   
   # Depth layer
-  plot(1:730/2, mean_var_5, type = "l", col = "#1E3A8A", lwd = 2, xlab = "",
+  plot(1:730/2, mean_var_5, type = "l", col = "#1E3A8A", lwd = 1.5, xlab = "",
        ylab = "", main = "Layer 5 (100-150 m)", ylim = c(abs_min, abs_max), axes = FALSE)
   axis(1, at = c(-100,0,100,200,300,400))
   axis(2, at = seq(round(abs_min)/2,round(abs_max)*2, (round(abs_max)-round(abs_min))/8), labels = FALSE)
   
   # box(col = )
-  lines(1:730/2, mean_var_velma_5, col = "#ADFF2F", lwd = 2)
+  lines(1:730/2, mean_var_velma_5, col = "#ADFF2F", lwd = 1.5)
   grid(nx = NULL, ny = NULL, col = "lightgray", lty = "dotted")
-  legend("topleft", legend = c("SSM", "SSM-VELMA"), col = c( "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 2, bty = "n")
+  legend("topleft", legend = c("SSM", "SSM-VELMA"), col = c( "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 1.5, bty = "n")
+  legend("topright", legend = c("AVERAGE"), col = c( "white"), lty = 1, lwd = 1.5, bty = "n")
   
   # Ajouter les étiquettes des axes globaux
   mtext("Days", side = 1, outer = TRUE, line = 1, col = , cex = 1.2)
   mtext(ylab, side = 2, outer = TRUE, line = 1, col = , cex = 1.2)
+  mtext(title, side = 3, outer = TRUE, line = 0, col = , cex = 1.2)
   
   
   
@@ -418,71 +397,62 @@ plot_SSM_wq <- function(varname, unit = "", varid = varname){
   #######################################################
   
   # Configuration de la disposition des graphiques et ajustement des marges globales
-  par(mfrow = c(1, 2), oma = c(2.5, 2.5, 2, 1), mar = c(2, 2, 2, 1))
+  # par(mfrow = c(1, 2), oma = c(2.5, 2.5, 2, 1), mar = c(2, 2, 2, 1))
   
   # Surface layer
-  plot(1:730/2, max_var_1, type = "l", col = "#1E3A8A", lwd = 2, xlab = "",
+  plot(1:730/2, max_var_1, type = "l", col = "#1E3A8A", lwd = 1.5, xlab = "",
        ylab = "", main = "Layer 1 (0-5m)", ylim = c(abs_min, abs_max), axes = FALSE)
   axis(1, at = c(-100,0,100,200,300,400))
   axis(2, at = seq(round(abs_min)/2,round(abs_max)*2, (round(abs_max)-round(abs_min))/8))
   # box(col = )
-  lines(1:730/2, max_var_velma_1, col = "#ADFF2F", lwd = 2)
+  lines(1:730/2, max_var_velma_1, col = "#ADFF2F", lwd = 1.5)
   grid(nx = NULL, ny = NULL, col = "lightgray", lty = "dotted")
-  legend("topleft", legend = c("SSM", "SSM-VELMA"), col = c("#1E3A8A", "#ADFF2F"), lty = 1, lwd = 2, bty = "n")
+  legend("topleft", legend = c("SSM", "SSM-VELMA"), col = c("#1E3A8A", "#ADFF2F"), lty = 1, lwd = 1.5, bty = "n")
+  legend("topright", legend = c("MAXIMUM"), col = c( "white"), lty = 1, lwd = 1.5, bty = "n")
   
   # Depth layer
-  plot(1:730/2, max_var_5, type = "l", col = "#1E3A8A", lwd = 2, xlab = "",
+  plot(1:730/2, max_var_5, type = "l", col = "#1E3A8A", lwd = 1.5, xlab = "",
        ylab = "", main = "Layer 5 (100-150 m)", ylim = c(abs_min, abs_max), axes = FALSE)
   axis(1, at = c(-100,0,100,200,300,400))
   axis(2, at = seq(round(abs_min)/2,round(abs_max)*2, (round(abs_max)-round(abs_min))/8), labels = FALSE)
   
   # box(col = )
-  lines(1:730/2, max_var_velma_5, col = "#ADFF2F", lwd = 2)
+  lines(1:730/2, max_var_velma_5, col = "#ADFF2F", lwd = 1.5)
   grid(nx = NULL, ny = NULL, col = "lightgray", lty = "dotted")
-  legend("topleft", legend = c("SSM", "SSM-VELMA"), col = c( "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 2, bty = "n")
-  
-  # Ajouter les étiquettes des axes globaux
-  mtext("Days", side = 1, outer = TRUE, line = 1, col = , cex = 1.2)
-  mtext(ylab, side = 2, outer = TRUE, line = 1, col = , cex = 1.2)
-  
+  legend("topleft", legend = c("SSM", "SSM-VELMA"), col = c( "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 1.5, bty = "n")
+  legend("topright", legend = c("MAXIMUM"), col = c( "white"), lty = 1, lwd = 1.5, bty = "n")
   
   #######################################################
   ######################### MIN ########################
   #######################################################
   
   # Configuration de la disposition des graphiques et ajustement des marges globales
-  par(mfrow = c(1, 2), oma = c(2.5, 2.5, 2, 1), mar = c(2, 2, 2, 1))
+  # par(mfrow = c(1, 2), oma = c(2.5, 2.5, 2, 1), mar = c(2, 2, 2, 1))
   
   # Surface layer
-  plot(1:730/2, min_var_1, type = "l", col = "#1E3A8A", lwd = 2, xlab = "",
+  plot(1:730/2, min_var_1, type = "l", col = "#1E3A8A", lwd = 1.5, xlab = "",
        ylab = "", main = "Layer 1 (0-5m)", ylim = c(abs_min, abs_max), axes = FALSE)
   axis(1, at = c(-100,0,100,200,300,400))
   axis(2, at = seq(round(abs_min)/2,round(abs_max)*2, (round(abs_max)-round(abs_min))/8))
   # box(col = )
-  lines(1:730/2, min_var_velma_1, col = "#ADFF2F", lwd = 2)
+  lines(1:730/2, min_var_velma_1, col = "#ADFF2F", lwd = 1.5)
   grid(nx = NULL, ny = NULL, col = "lightgray", lty = "dotted")
-  legend("topleft", legend = c("SSM", "SSM-VELMA"), col = c("#1E3A8A", "#ADFF2F"), lty = 1, lwd = 2, bty = "n")
+  legend("topleft", legend = c("SSM", "SSM-VELMA"), col = c("#1E3A8A", "#ADFF2F"), lty = 1, lwd = 1.5, bty = "n")
+  legend("topright", legend = c("MINIMUM"), col = c( "white"), lty = 1, lwd = 1.5, bty = "n")
   
   # Depth layer
-  plot(1:730/2, min_var_5, type = "l", col = "#1E3A8A", lwd = 2, xlab = "",
+  plot(1:730/2, min_var_5, type = "l", col = "#1E3A8A", lwd = 1.5, xlab = "",
        ylab = "", main = "Layer 5 (100-150 m)", ylim = c(abs_min, abs_max), axes = FALSE)
   axis(1, at = c(-100,0,100,200,300,400))
   axis(2, at = seq(round(abs_min)/2,round(abs_max)*2, (round(abs_max)-round(abs_min))/8), labels = FALSE)
   
   # box(col = )
-  lines(1:730/2, min_var_velma_5, col = "#ADFF2F", lwd = 2)
+  lines(1:730/2, min_var_velma_5, col = "#ADFF2F", lwd = 1.5)
   grid(nx = NULL, ny = NULL, col = "lightgray", lty = "dotted")
-  legend("topleft", legend = c("SSM", "SSM-VELMA"), col = c( "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 2, bty = "n")
-  
-  # Ajouter les étiquettes des axes globaux
-  mtext("Days", side = 1, outer = TRUE, line = 1, col = , cex = 1.2)
-  mtext(ylab, side = 2, outer = TRUE, line = 1, col = , cex = 1.2)
-  # dev.off()
+  legend("topleft", legend = c("SSM", "SSM-VELMA"), col = c( "#1E3A8A", "#ADFF2F"), lty = 1, lwd = 1.5, bty = "n")
+  legend("topright", legend = c("MINIMUM"), col = c( "white"), lty = 1, lwd = 1.5, bty = "n")
   
 }
-
-
-
 plot_SSM <- function(varname){
   
   list.var = c("salinity","temperature",
@@ -490,6 +460,13 @@ plot_SSM <- function(varname){
                "SZ", "LZ", "MZ", "SP", "LP",
                "Oxygen","LPON","RPON",
                "RDON")
+  
+  list.title = c("Salinity","Temperature",
+               "Nitrate", "Ammonium", 
+               "Small Zooplankton", "Large Zooplankton", "Meso Zooplankton", 
+               "Small Phytoplankton", "Large Phytoplankton",
+               "Oxygen","Labile Particulate Organic Nitrogen","Refractory Particulate Organic Nitrogen",
+               "Dissolved Organic Nitrogen")
   
   list.unit <- c("(g.L-1)","(°C)",
                  "(mg N.m-3)", "(mg N.m-3)", 
@@ -504,15 +481,23 @@ plot_SSM <- function(varname){
                      "DON")
   
   if (varname == "all"){
-    pdf()
+    pdf(file = "SSM-VELMA.pdf",   # The directory you want to save the file in
+        width = 10, # The width of the plot in inches
+        height = 9)
     plot_SSM(varname = "salinity")
     plot_SSM(varname = "temperature")
     plot_SSM(varname = "Oxygen")
-    plot_SSM(varname = "SP")
-    plot_SSM(varname = "LP")
-    plot_SSM(varname = "SZ")
-    plot_SSM(varname = "MZ")
-    plot_SSM(varname = "LZ")
+
+    # plot_SSM(varname = "NH4")
+    # plot_SSM(varname = "NO3")
+    # plot_SSM(varname = "SP")
+    # plot_SSM(varname = "LP")
+    # plot_SSM(varname = "SZ")
+    # plot_SSM(varname = "MZ")
+    # plot_SSM(varname = "LZ")
+    # plot_SSM(varname = "LPON")
+    # plot_SSM(varname = "RPON")
+    # plot_SSM(varname = "RDON")
     dev.off()
   }else{
     
@@ -525,10 +510,10 @@ For a pdf sum up, try all ")
     
     if (varname=="salinity"||varname=="temperature"){
       plot_SSM_physics(varname = varname, unit = list.unit[pos], 
-                       varid = atlantis.name[pos])
+                       varid = atlantis.name[pos], title = list.title[pos])
     }else{
       plot_SSM_wq(varname = varname, unit = list.unit[pos], 
-                  varid = atlantis.name[pos])
+                  varid = atlantis.name[pos], title = list.title[pos])
     }
     
     
@@ -538,7 +523,7 @@ For a pdf sum up, try all ")
   
   
 }
-
+plot_SSM("all")
 plot_SSM(varname = "salinity")
 plot_SSM(varname = "temperature")
 plot_SSM(varname = "Oxygen")
@@ -549,8 +534,10 @@ plot_SSM(varname = "LP")
 plot_SSM(varname = "SZ")
 plot_SSM(varname = "MZ")
 plot_SSM(varname = "LZ")
-# plot_SSM(varname = "RPON")
-plot_SSM("all")
+plot_SSM(varname = "LPON")
+plot_SSM(varname = "RPON")
+plot_SSM(varname = "RDON")
+
 
 
 

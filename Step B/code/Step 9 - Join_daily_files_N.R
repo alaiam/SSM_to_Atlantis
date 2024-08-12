@@ -51,7 +51,7 @@ z_var <- ncvar_def("z", "int", dim = list(z_dim), units = "depthBin", longname =
 b_var <- ncvar_def("b", "int", dim = list(b_dim), units = "boxNum", longname = "b")
 t_var <- ncvar_def("t", "double", dim = list(t_dim), units = "seconds since 2011-01-01", longname = "t")
 NO3 <- ncvar_def("NO3", "double", dim = list( z_dim,b_dim, t_dim),
-                units = "mg N m-3", missval = -1, longname = "NO3")
+                units = "mg N m-3", missval = 0, longname = "NO3")
 
 
 # Create a NetCDF file
@@ -98,7 +98,7 @@ z_var <- ncvar_def("z", "int", dim = list(z_dim), units = "depthBin", longname =
 b_var <- ncvar_def("b", "int", dim = list(b_dim), units = "boxNum", longname = "b")
 t_var <- ncvar_def("t", "double", dim = list(t_dim), units = "seconds since 2011-01-01", longname = "t")
 NH4 <- ncvar_def("NH3", "double", dim = list( z_dim,b_dim, t_dim),
-                units = "mg N m-3", missval = -1, longname = "NH3)")
+                units = "mg N m-3", missval = 0, longname = "NH3)")
 
 
 # Create a NetCDF file

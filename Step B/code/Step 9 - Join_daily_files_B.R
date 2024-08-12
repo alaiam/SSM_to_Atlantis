@@ -51,7 +51,7 @@ z_var <- ncvar_def("z", "int", dim = list(z_dim), units = "depthBin", longname =
 b_var <- ncvar_def("b", "int", dim = list(b_dim), units = "boxNum", longname = "b")
 t_var <- ncvar_def("t", "double", dim = list(t_dim), units = "seconds since 2011-01-01", longname = "t")
 B1 <- ncvar_def("Lrg_Phyto_N", "double", dim = list( z_dim,b_dim, t_dim),
-                         units = "mg N m-3", missval = -1, longname = "Large phytoplankton (diatoms)")
+                         units = "mg N m-3", missval = 0, longname = "Large phytoplankton (diatoms)")
 
 
 # Create a NetCDF file
@@ -98,7 +98,7 @@ z_var <- ncvar_def("z", "int", dim = list(z_dim), units = "depthBin", longname =
 b_var <- ncvar_def("b", "int", dim = list(b_dim), units = "boxNum", longname = "b")
 t_var <- ncvar_def("t", "double", dim = list(t_dim), units = "seconds since 2011-01-01", longname = "t")
 B2 <- ncvar_def("Sm_Phyto_N", "double", dim = list( z_dim,b_dim, t_dim),
-                      units = "mg N m-3", missval = -1, longname = "Small phytoplankton (dinoflagellates)")
+                      units = "mg N m-3", missval = 0, longname = "Small phytoplankton (dinoflagellates)")
 
 
 # Create a NetCDF file

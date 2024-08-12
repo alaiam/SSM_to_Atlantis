@@ -3,7 +3,7 @@ library(here)
 
 # Variables to change #
 year = 2011
-velma = F
+velma = T
 
 # Set path
 if (velma){
@@ -47,7 +47,7 @@ z_var <- ncvar_def("z", "int", dim = list(z_dim), units = "depthBin", longname =
 b_var <- ncvar_def("b", "int", dim = list(b_dim), units = "boxNum", longname = "b")
 t_var <- ncvar_def("t", "double", dim = list(t_dim), units = "seconds since 2011-01-01", longname = "t")
 LDON <- ncvar_def("LDON", "double", dim = list( z_dim,b_dim, t_dim),
-                         units = "mg N m-3", missval = -1, longname = "Labile dissolved organic nitrogen")
+                         units = "mg N m-3", missval = 0, longname = "Labile dissolved organic nitrogen")
 
 
 # Create a NetCDF file
@@ -94,7 +94,7 @@ z_var <- ncvar_def("z", "int", dim = list(z_dim), units = "depthBin", longname =
 b_var <- ncvar_def("b", "int", dim = list(b_dim), units = "boxNum", longname = "b")
 t_var <- ncvar_def("t", "double", dim = list(t_dim), units = "seconds since 2011-01-01", longname = "t")
 RDON <- ncvar_def("DON", "double", dim = list( z_dim,b_dim, t_dim),
-                      units = "mg N m-3", missval = -1, longname = "Refractory dissolved organic nitrogen")
+                      units = "mg N m-3", missval = 0, longname = "Refractory dissolved organic nitrogen")
 
 
 # Create a NetCDF file

@@ -123,9 +123,9 @@ dest_var <- ncvar_def("dest", "int", dim = list(dest_dim), units = "dest", longn
 exchange_var = ncvar_def("exchange", "double", dim = list(dest_dim, z_dim,b_dim,t_dim),
                          units = "m^3", missval = 0, longname = "Change in volume in this time step")
 dest_b_var =  ncvar_def("dest_b", "int", dim = list(dest_dim, z_dim,b_dim,t_dim),
-                        missval = -1, longname = "")
+                        missval = 0, longname = "")
 dest_k_var =  ncvar_def("dest_k", "int", dim = list(dest_dim, z_dim,b_dim,t_dim),
-                        missval = -1, longname = "")
+                        missval = 0, longname = "")
 
 
 # Create a NetCDF file
