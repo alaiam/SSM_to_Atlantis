@@ -96,7 +96,7 @@ original_lon = lon
 
 # Open the original latitude, longitude, from each nele
 
-nele_infos = pd.read_excel('/home/atlantis/amps_hydrodynamics/ssm_psimf_element_info.xlsx', index_col=0)
+nele_infos = pd.read_excel('/home/atlantis/amps_hydrodynamics/Step A/ssm_psimf_element_info.xlsx', index_col=0)
 nele_infos = nele_infos[nele_infos['target_cell'] >0]
 original_latc = np.array(nele_infos['latc']) 
 original_lonc = np.array(nele_infos['lonc'])  

@@ -183,3 +183,6 @@ salt_var[:] = new_regular_salt.astype('float')
 nc.close()
 print('New ROMSgrid NetCDF file created!')
 
+del new_regular_temp
+del new_regular_salt
+print('Clean var!')
