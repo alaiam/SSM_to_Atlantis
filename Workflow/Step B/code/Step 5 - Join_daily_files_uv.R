@@ -120,12 +120,12 @@ t_var <- ncvar_def("t", "double", dim = list(t_dim), units = "seconds since 2095
 dest_var <- ncvar_def("dest", "int", dim = list(dest_dim), units = "dest", longname = "dest")
 
 
-exchange_var = ncvar_def("exchange", "double", dim = list(dest_dim, z_dim,b_dim,t_dim),
+exchange_var = ncvar_def("exchange", prec = "double", dim = list(dest_dim, z_dim,b_dim,t_dim),
                          units = "m^3", missval = 0, longname = "Change in volume in this time step")
-dest_b_var =  ncvar_def("dest_b", "int", dim = list(dest_dim, z_dim,b_dim,t_dim),
-                        missval = 0, longname = "")
-dest_k_var =  ncvar_def("dest_k", "int", dim = list(dest_dim, z_dim,b_dim,t_dim),
-                        missval = 0, longname = "")
+dest_b_var =  ncvar_def("dest_b", prec = "integer", dim = list(dest_dim, z_dim,b_dim,t_dim),
+                        missval = -1, longname = "", units = "#")
+dest_k_var =  ncvar_def("dest_k", prec = "integer", dim = list(dest_dim, z_dim,b_dim,t_dim),
+                        missval = -1, longname = "", units = "#")
 
 
 # Create a NetCDF file
