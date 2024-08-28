@@ -10,11 +10,11 @@ input_path <- paste0(here(),"/Workflow/Step A/File_regular_grid/")
 # Velma?
 Velma = T
 if (Velma){
-  filename <- paste0("VELMA/",Nyear,"/regular_grid_O2_velma_",Nyear,".nc")
+  filename <- paste0("VELMA/",Nyear,"/regular_grid_Oxygen_velma_",Nyear,".nc")
   output_path <- paste0(path, "intermediate output archive/output_VELMA_",Nyear,"_O2/")
   
 }else{
-  filename <- paste0("No_VELMA/",Nyear,"/regular_grid_O2_novelma_",Nyear,".nc")
+  filename <- paste0("No_VELMA/",Nyear,"/regular_grid_Oxygen_novelma_",Nyear,".nc")
   output_path <- paste0(path, "intermediate output archive/output_No_VELMA_",Nyear,"_O2/")
 }
 
@@ -158,5 +158,4 @@ foreach(days = step_file) %dopar%{
   nc_close(nc)
   
 }
-end_time <- Sys.time()
 

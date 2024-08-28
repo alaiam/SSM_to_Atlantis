@@ -1,8 +1,8 @@
 # Set path
 if (velma){
-  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",year,"_PON")
+  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",Nyear,"_PON")
 }else{
-  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",year,"_PON")
+  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",Nyear,"_PON")
 }
 setwd(path)
 list.file <- sort(list.files(path))
@@ -44,9 +44,9 @@ LPON <- ncvar_def("Lab_Det_N", "double", dim = list( z_dim,b_dim, t_dim),
 
 # Create a NetCDF file
 if (velma){
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",year,"/pugetsound_SSM_Atlantis_LPON_velma_",year,".nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",Nyear,"/pugetsound_SSM_Atlantis_LPON_velma_",Nyear,".nc")
 }else{
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",year,"/pugetsound_SSM_Atlantis_LPON_","2011.nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",Nyear,"/pugetsound_SSM_Atlantis_LPON_","2011.nc")
 }
 nc <- nc_create(nc_filename, vars = list(LPON = LPON))
 
@@ -91,9 +91,9 @@ RPON <- ncvar_def("Ref_Det_N", "double", dim = list( z_dim,b_dim, t_dim),
 
 # Create a NetCDF file
 if (velma){
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",year,"/pugetsound_SSM_Atlantis_RPON_velma_",year,".nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",Nyear,"/pugetsound_SSM_Atlantis_RPON_velma_",Nyear,".nc")
 }else{
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",year,"/pugetsound_SSM_Atlantis_RPON_","2011.nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",Nyear,"/pugetsound_SSM_Atlantis_RPON_","2011.nc")
 }
 
 nc <- nc_create(nc_filename, vars = list(RPON = RPON))

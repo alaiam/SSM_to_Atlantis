@@ -3,7 +3,6 @@ velma = T
 # Path and names definition
 
 path        <- paste0(here(), "/Workflow/Step B/")
-setwd(path)
 input_path <- paste0(here(),"/Workflow/Step A/File_regular_grid/")
 
 if (velma == T){
@@ -214,7 +213,7 @@ csv_filename <- paste0(output_path, "uv_", days,".csv")
 write.csv(Corr.Flux_between_polygon, csv_filename, row.names = F)
 }
 
-stopCluster(cl)
+# stopCluster(cl)
 
 
 

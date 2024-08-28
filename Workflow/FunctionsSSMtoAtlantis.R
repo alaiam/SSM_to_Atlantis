@@ -1,5 +1,5 @@
-year = 2095
-velma = T
+# year = 2095
+# velma = T
 
 library(ncdf4)
 library(here)
@@ -28,54 +28,53 @@ preprocess <- function(){
 
 
 SSMtoAtlantis <- function(year, velma, filename.hyd, filename.wq){
-  list.var = c("salinity","temperature",
-               "U", "V", "W",
-               "NO3", "NH4", 
-               "SZ", "LZ", "MZ", "SP", "LP",
-               "Oxygen","LPON","RPON",
-               "RDON")
+  .year <<- year
+  .velma <<- velma
+  .filename.hyd <<- filename.hyd
+  .filename.wq <<- filename.wq
+  
   start.time <- Sys.time()
   write.csv(start.time, "starttime.csv")
   step.time <- c()
    # hyd
-  print("TS")
-  var.SSMtoAtlantis(year = year, variable = "temperature", velma = velma, filename = filename.hyd)
-  print("UVW")
-  step.time <- c(step.time,Sys.time())
-  write.csv(step.time, "steptime.csv")
-  
-  var.SSMtoAtlantis(year = year, variable = "U", velma = velma, filename = filename.hyd)
-  step.time <- c(step.time,Sys.time())
-  write.csv(step.time, "steptime.csv")
-  
-  #wq
-  print("Z")
-  var.SSMtoAtlantis(year = year, variable = "SZ", velma = velma, filename = filename.wq)
-  step.time <- c(step.time,Sys.time())
-  write.csv(step.time, "steptime.csv")
-  
-  print("P")
-  var.SSMtoAtlantis(year = year, variable = "SP", velma = velma, filename = filename.wq)
-  step.time <- c(step.time,Sys.time())
-  write.csv(step.time, "steptime.csv")
-  
-  print("N")
-  var.SSMtoAtlantis(year = year, variable = "NO3", velma = velma, filename = filename.wq)
-  step.time <- c(step.time,Sys.time())
-  write.csv(step.time, "steptime.csv")
-  
-  print("DON")
-  var.SSMtoAtlantis(year = year, variable = "RDON", velma = velma, filename = filename.wq)
-  step.time <- c(step.time,Sys.time())
-  write.csv(step.time, "steptime.csv")
+  # print("TS")
+  # var.SSMtoAtlantis(year = .year, variable = "temperature", velma = .velma, filename = .filename.hyd)
+  # print("UVW")
+  # step.time <- c(step.time,Sys.time())
+  # write.csv(step.time, "steptime.csv")
+  # 
+  # var.SSMtoAtlantis(year = .year, variable = "U", velma = .velma, filename = .filename.hyd)
+  # step.time <- c(step.time,Sys.time())
+  # write.csv(step.time, "steptime.csv")
+  # 
+  # #wq
+  # print("Z")
+  # var.SSMtoAtlantis(year = .year, variable = "SZ", velma = .velma, filename = .filename.wq)
+  # step.time <- c(step.time,Sys.time())
+  # write.csv(step.time, "steptime.csv")
+  # 
+  # print("P")
+  # var.SSMtoAtlantis(year = .year, variable = "SP", velma = .velma, filename = .filename.wq)
+  # step.time <- c(step.time,Sys.time())
+  # write.csv(step.time, "steptime.csv")
+  # 
+  # print("N")
+  # var.SSMtoAtlantis(year = .year, variable = "NO3", velma = .velma, filename = .filename.wq)
+  # step.time <- c(step.time,Sys.time())
+  # write.csv(step.time, "steptime.csv")
+  # 
+  # print("DON")
+  # var.SSMtoAtlantis(year = .year, variable = "RDON", velma = .velma, filename = .filename.wq)
+  # step.time <- c(step.time,Sys.time())
+  # write.csv(step.time, "steptime.csv")
   
   print("O2")
-  var.SSMtoAtlantis(year = year, variable = "Oxygen", velma = velma, filename = filename.wq)
+  var.SSMtoAtlantis(year = .year, variable = "Oxygen", velma = .velma, filename = .filename.wq)
   step.time <- c(step.time,Sys.time())
   write.csv(step.time, "steptime.csv")
   
   print("PON")
-  var.SSMtoAtlantis(year = year, variable = "LPON", velma = velma, filename = filename.wq)
+  var.SSMtoAtlantis(year = .year, variable = "LPON", velma = .velma, filename = .filename.wq)
   step.time <- c(step.time,Sys.time())
   write.csv(step.time, "steptime.csv")
   
@@ -94,9 +93,12 @@ var.SSMtoAtlantis <- function(year, variable, velma, filename){
   
   if(!variable%in%list.var) stop("The variable is not in SSM, please try:
 salinity, temperature, U, V, W, NO3, NH4, SZ, LZ, MZ, SP, LP, Oxygen, LPON, RPON, RDON")
-  StepA(year, variable, velma, filename)
-  StepB(year, variable, velma)
-  Joindailyfile(year, variable, velma)
+  # print("var1")
+  StepA(year = year, variable = variable, velma = velma, filename = filename)
+  print("var2")
+  StepB(year = year, variable = variable, velma = velma)
+  print("var3")
+  Joindailyfile(year = year, variable = variable, velma = velma)
 
 }
 
@@ -174,6 +176,8 @@ salinity, temperature, U, V, W, NO3, NH4, SZ, LZ, MZ, SP, LP, Oxygen, LPON, RPON
 # Step B
 StepB <- function(year, variable, velma){
   Nyear <<- year
+  velma <<- velma
+  variable <<- variable
   list.var = c("salinity","temperature",
                "U", "V", "W",
                "NO3", "NH4", 
@@ -200,6 +204,11 @@ For a pdf sum up, try all ")
 }
 # Join daily files
 Joindailyfile <- function(year, variable, velma){
+  
+  Nyear <<- year
+  velma <<- velma
+  variable <<- variable 
+  
   list.var = c("salinity","temperature",
                "U", "V", "W",
                "NO3", "NH4", 
@@ -212,7 +221,7 @@ Joindailyfile <- function(year, variable, velma){
 salinity, temperature, U, V, W, NO3, NH4, SZ, LZ, MZ, SP, LP, Oxygen, LPON, RPON, RDON")
   
   list.folder.names = c("TS","TS",
-                        "uvw", "uvw", "uvw",
+                        "uv", "uv", "uv",
                         "N", "N", 
                         "Z", "Z", "Z", "B", "B",
                         "O2","PON","PON",
@@ -240,7 +249,13 @@ salinity, temperature, U, V, W, NO3, NH4, SZ, LZ, MZ, SP, LP, Oxygen, LPON, RPON
       source("Workflow/Step B/code/Step 4 - Join TS daily files.R")
     }
     if (variable == "U"|| variable =="V"|| variable =="W"){
-      source("Workflow/Step B/code/Step 5 - Join_daily_files_uv.R")
+      output_path = paste0("Workflow/Step B/intermediate output archive/output_VELMA_",year, "_ww")
+      if (length(list.files(output_path))<730){
+        print("totou")
+        StepB(year, variable, velma)
+        Joindailyfile(year, variable, velma)
+      }else{
+      source("Workflow/Step B/code/Step 5 - Join_daily_files_uv.R")}
     }
     if (variable == "NO3"|| variable =="NH4"){
       print("oy")

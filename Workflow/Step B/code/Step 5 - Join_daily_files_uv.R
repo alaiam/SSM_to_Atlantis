@@ -2,19 +2,19 @@
 # Set path
 
 path        <- here()
-outdir <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",year)
+outdir <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",Nyear)
 if (!file.exists(outdir)){dir.create(outdir)}
 
 # Set path
 if (velma){
-  uv_dir <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",year,"_uv")
-  ww_dir <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",year,"_ww")
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",year,"/pugetsound_SSM_Atlantis_uvw_velma_",year,".nc")
+  uv_dir <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",Nyear,"_uv")
+  ww_dir <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",Nyear,"_ww")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",Nyear,"/pugetsound_SSM_Atlantis_uvw_velma_",Nyear,".nc")
   
 }else{
-  uv_dir <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",year,"_uv")
-  ww_dir <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",year,"_ww")
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",year,"/pugetsound_SSM_Atlantis_uvw_novelma_",year,".nc")
+  uv_dir <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",Nyear,"_uv")
+  ww_dir <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",Nyear,"_ww")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",Nyear,"/pugetsound_SSM_Atlantis_uvw_novelma_",Nyear,".nc")
   
 }
 

@@ -1,9 +1,9 @@
 
 # Set path
 if (velma){
-  path <- paste0(here(), "Workflow/Step B/intermediate output archive/output_VELMA_",year,"_O2")
+  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",Nyear,"_O2")
 }else{
-  path <- paste0(here(), "Workflow/Step B/intermediate output archive/output_No_VELMA_",year,"_O2")
+  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",Nyear,"_O2")
 }
 setwd(path)
 
@@ -47,9 +47,9 @@ O2 <- ncvar_def("Oxygen", "double", dim = list( z_dim,b_dim, t_dim),
 
 # Create a NetCDF file
 if (velma){
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",year,"/pugetsound_SSM_Atlantis_Oxygen_velma_",year,".nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",Nyear,"/pugetsound_SSM_Atlantis_Oxygen_velma_",Nyear,".nc")
 }else{
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",year,"/pugetsound_SSM_Atlantis_Oxygen_","2011.nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",Nyear,"/pugetsound_SSM_Atlantis_Oxygen_","2011.nc")
 }
 
 nc <- nc_create(nc_filename, vars = list(O2 = O2))

@@ -1,9 +1,15 @@
 
 # Set path
 if (velma){
-  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",year,"_TS")
+  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",Nyear,"_TS")
+  nc_filenameT <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",Nyear,"/pugetsound_SSM_Atlantis_temperature_velma_",Nyear,".nc")
+  nc_filenameS <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",Nyear,"/pugetsound_SSM_Atlantis_salinity_velma_",Nyear,".nc")
+  
 }else{
-  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",year,"_TS")
+  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",Nyear,"_TS")
+  nc_filenameT <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",Nyear,"/pugetsound_SSM_Atlantis_temperature_","2011.nc")
+  nc_filenameS <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",Nyear,"/pugetsound_SSM_Atlantis_salinity_","2011.nc")
+  
 }
 
 setwd(path)
@@ -27,7 +33,7 @@ atlantis_input_Temp <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+
 atlantis_input_salinity <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1),box,length(time)))
 liste <- sort(list.file)
 
-
+print("yo")
 # Aggregation
 for (i in 1:length(list.file)){
   nc <- nc_open(paste0("Physical_var_AtlantisTS_",i,".nc"))
@@ -36,10 +42,8 @@ for (i in 1:length(list.file)){
   atlantis_input_salinity[,,i]  <- ncvar_get(nc, varid = "salinity")
   nc_close(nc)
 }
+print("ya")
 
-# Check that the table is correctly fullfilled
-apply(X = is.na(atlantis_input_salinity),  FUN = sum, MARGIN = c(3))
-apply(X = is.na(atlantis_input_Temp),  FUN = sum, MARGIN = c(3))
 
 ###################################################################################
 # Temperature file
@@ -47,22 +51,20 @@ apply(X = is.na(atlantis_input_Temp),  FUN = sum, MARGIN = c(3))
 # Define dimensions
 z_dim <- ncdim_def("z","layerNum", 1:(layer+1))
 b_dim <- ncdim_def("b","boxNum", 0:(box-1))
-t_dim <- ncdim_def("t","seconds since ",year,"-01-01", time, unlim = T)
+t_dim <- ncdim_def("t",units = paste0("seconds since ",Nyear,"-01-01"), time, unlim = T)
+
+
 # Define variables
 z_var <- ncvar_def("z", "int", dim = list(z_dim), units = "depthBin", longname = "z")
 b_var <- ncvar_def("b", "int", dim = list(b_dim), units = "boxNum", longname = "b")
-t_var <- ncvar_def("t", "double", dim = list(t_dim), units = "seconds since ",year,"-01-01", longname = "t")
+t_var <- ncvar_def("t", "double", dim = list(t_dim), units =  paste0("seconds since ",Nyear,"-01-01"), longname = "t")
 temperature <- ncvar_def("temperature", "double", dim = list( z_dim,b_dim, t_dim),
                          units = "°C", missval = 0, longname = "Temperature")
 
+print("yre")
 
 # Create a NetCDF file
-if (velma){
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",year,"/pugetsound_SSM_Atlantis_temp_velma_",year,".nc")
-}else{
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",year,"/pugetsound_SSM_Atlantis_temp_","2011.nc")
-}
-nc <- nc_create(nc_filename, vars = list(temperature = temperature))
+nc <- nc_create(nc_filenameT, vars = list(temperature = temperature))
 
 # Put dimensions and variables in the NetCDF file
 
@@ -86,30 +88,26 @@ ncatt_put(nc, 0, "geometry", "PugetSound_89b_070116.bgm")
 nc_close(nc)
 
 
+print("ytt")
 
 ###################################################################################
 # Salinity file
 ###################################################################################
 # Define dimensions
-t_dim <- ncdim_def("t","seconds since ",year,"-01-01", time, unlim = T)
+t_dim <- ncdim_def("t", paste0("seconds since ",Nyear,"-01-01"), time, unlim = T)
 z_dim <- ncdim_def("z","layerNum", 1:(layer+1))
 b_dim <- ncdim_def("b","boxNum", 0:(box-1))
 
 # Define variables
 z_var <- ncvar_def("z", "int", dim = list(z_dim), units = "depthBin", longname = "z")
 b_var <- ncvar_def("b", "int", dim = list(b_dim), units = "boxNum", longname = "b")
-t_var <- ncvar_def("t", "double", dim = list(t_dim), units = "seconds since ",year,"-01-01", longname = "t")
+t_var <- ncvar_def("t", "double", dim = list(t_dim), units =  paste0("seconds since ",Nyear,"-01-01"), longname = "t")
 salinity <- ncvar_def("salinity", "double", dim = list( z_dim,b_dim, t_dim),
                       units = "g.L-1", missval = 0, longname = "Salinity")
 
 
 # Create a NetCDF file
-if (velma){
-  nc_filename <- paste0(here(), "/Workflow/Step B/VELMA/Final outputs/",year,"/pugetsound_SSM_Atlantis_salinity_velma_",year,".nc")
-}else{
-  nc_filename <- paste0(here(), "/Workflow/Step B/No_VELMA/Final outputs/",year,"/pugetsound_SSM_Atlantis_salinity_","2011.nc")
-}
-nc <- nc_create(nc_filename, vars = list(salinity = salinity))
+nc <- nc_create(nc_filenameS, vars = list(salinity = salinity))
 
 # Put dimensions and variables in the NetCDF file
 
@@ -131,5 +129,8 @@ ncatt_put(nc, 0, "geometry", "PugetSound_89b_070116.bgm")
 
 # Close the NetCDF file
 nc_close(nc)
+
+print("yrezgf")
+
 setwd(here())
 

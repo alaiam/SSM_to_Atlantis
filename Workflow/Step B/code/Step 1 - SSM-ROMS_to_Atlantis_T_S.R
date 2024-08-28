@@ -8,8 +8,7 @@ path        <- paste0(here(), "/Workflow/Step B/")
 input_path <- paste0(here(),"/Workflow/Step A/File_regular_grid/")
 
 # Velma?
-Velma = T
-if (Velma){
+if (velma){
   filename <- paste0("VELMA/",Nyear,"/regular_grid_TS_velma_",Nyear,".nc")
   output_path <- paste0(path, "intermediate output archive/output_VELMA_",Nyear,"_TS/")
   
@@ -162,4 +161,4 @@ foreach(days = step_file) %dopar%{
   
 }
 end_time <- Sys.time()
-
+setwd(here())

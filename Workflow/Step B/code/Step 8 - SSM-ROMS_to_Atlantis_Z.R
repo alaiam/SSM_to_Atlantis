@@ -178,6 +178,4 @@ foreach(days = step_file) %dopar%{
   nc_close(nc)
   
 }
-# end_time <- Sys.time()
-# stopCluster(cl)
-# registerDoSEQ()
+

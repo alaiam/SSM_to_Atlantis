@@ -1,9 +1,9 @@
 
 # Set path
 if (velma){
-  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",year,"_Z")
+  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",Nyear,"_Z")
 }else{
-  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",year,"_Z")
+  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",Nyear,"_Z")
 }
 setwd(path)
 
@@ -56,9 +56,9 @@ SZ <- ncvar_def("Micro_Zoo_N", "double", dim = list( z_dim,b_dim, t_dim),
 
 # Create a NetCDF file
 if (velma){
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",year,"/pugetsound_SSM_Atlantis_SZ_velma_",year,".nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",Nyear,"/pugetsound_SSM_Atlantis_SZ_velma_",Nyear,".nc")
 }else{
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",year,"/pugetsound_SSM_Atlantis_SZ_","2011.nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",Nyear,"/pugetsound_SSM_Atlantis_SZ_","2011.nc")
 }
 
 nc <- nc_create(nc_filename, vars = list(SZ = SZ))
@@ -106,9 +106,9 @@ MZ <- ncvar_def("Meso_Zoo_N", "double", dim = list( z_dim,b_dim, t_dim),
 
 # Create a NetCDF file
 if (velma){
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",year,"/pugetsound_SSM_Atlantis_MZ_velma_",year,".nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",Nyear,"/pugetsound_SSM_Atlantis_MZ_velma_",Nyear,".nc")
 }else{
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",year,"/pugetsound_SSM_Atlantis_MZ_","2011.nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",Nyear,"/pugetsound_SSM_Atlantis_MZ_","2011.nc")
 }
 
 nc <- nc_create(nc_filename, vars = list(MZ = MZ))
@@ -159,9 +159,9 @@ LZ <- ncvar_def("Lrg_Zoo_N", "double", dim = list( z_dim,b_dim, t_dim),
 
 # Create a NetCDF file
 if (velma){
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",year,"/pugetsound_SSM_Atlantis_LZ_velma_",year,".nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",Nyear,"/pugetsound_SSM_Atlantis_LZ_velma_",Nyear,".nc")
 }else{
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",year,"/pugetsound_SSM_Atlantis_LZ_","2011.nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",Nyear,"/pugetsound_SSM_Atlantis_LZ_","2011.nc")
 }
 
 nc <- nc_create(nc_filename, vars = list(LZ = LZ))

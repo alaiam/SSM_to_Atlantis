@@ -177,10 +177,4 @@ foreach(days = step_file) %dopar%{
   nc_close(nc)
   
 }
-end_time <- Sys.time()
 
-
-
-# for (i in 1:730){
-#   file.rename(paste0("Step B/output_VELMA_2011_N/N_var_Atlantis_",i,".nc"), paste0("Step B/output_VELMA_2011_N/N_Atlantis_",i,".nc"))
-# }

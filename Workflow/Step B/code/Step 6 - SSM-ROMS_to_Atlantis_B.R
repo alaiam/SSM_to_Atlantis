@@ -173,6 +173,4 @@ ncatt_put(nc, 0, "parameters", "")
 nc_close(nc)
 
 }
-end_time <- Sys.time()
-stopCluster(cl)
-registerDoSEQ()
+

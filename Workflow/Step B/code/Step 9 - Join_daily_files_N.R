@@ -1,8 +1,8 @@
 # Set path
 if (velma){
-  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",year,"_N")
+  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_VELMA_",Nyear,"_N")
 }else{
-  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",year,"_N")
+  path <- paste0(here(), "/Workflow/Step B/intermediate output archive/output_No_VELMA_",Nyear,"_N")
 }
 setwd(path)
 
@@ -49,9 +49,9 @@ NO3 <- ncvar_def("NO3", "double", dim = list( z_dim,b_dim, t_dim),
 
 # Create a NetCDF file
 if (velma){
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",year,"/pugetsound_SSM_Atlantis_NO3_velma_",year,".nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",Nyear,"/pugetsound_SSM_Atlantis_NO3_velma_",Nyear,".nc")
 }else{
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",year,"/pugetsound_SSM_Atlantis_NO3_","2011.nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",Nyear,"/pugetsound_SSM_Atlantis_NO3_","2011.nc")
 }
 
 
@@ -99,9 +99,9 @@ NH4 <- ncvar_def("NH3", "double", dim = list( z_dim,b_dim, t_dim),
 
 # Create a NetCDF file
 if (velma){
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",year,"/pugetsound_SSM_Atlantis_NH4_velma_",year,".nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/VELMA/",Nyear,"/pugetsound_SSM_Atlantis_NH4_velma_",Nyear,".nc")
 }else{
-  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",year,"/pugetsound_SSM_Atlantis_NH4_","2011.nc")
+  nc_filename <- paste0(here(), "/Workflow/Step B/Final outputs/No_VELMA/",Nyear,"/pugetsound_SSM_Atlantis_NH4_","2011.nc")
 }
 
 nc <- nc_create(nc_filename, vars = list(NH4 = NH4))
