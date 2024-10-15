@@ -3,15 +3,15 @@ library(here)
 
 # Variables to change #
 year = 2011
-velma = T
+velma = F
 
 # Set path
 if (velma){
-  path <- paste0(here(), "/Step B/output_VELMA_",year,"_DON")
+  path <- paste0(here(), "/Step B/intermediate output archive/output_VELMA_",year,"_DON")
 }else{
-  path <- paste0(here(), "/Step B/output_No_VELMA_",year,"_DON")
+  path <- paste0(here(), "/Step B/intermediate output archive/output_No_VELMA_",year,"_DON")
 }
-setwd(path)
+# setwd(path)
 
 list.file <- sort(list.files(path))
 time = seq(0,730*12*60*60-1, 12*60*60) 
@@ -26,7 +26,7 @@ atlantis_input_LDON <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+
 atlantis_input_RDON <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1),box,length(time)))
 liste <- sort(list.file)
 for (i in 1:length(list.file)){
-  nc <- nc_open(paste0("DON_Atlantis_",i,".nc"))
+  nc <- nc_open(paste0(path, "/DON_Atlantis_",i,".nc"))
   pdt <- ncvar_get(nc, varid = "t")/60/60+1
   atlantis_input_LDON[,,i]      <- ncvar_get(nc, varid = "LDON")
   atlantis_input_RDON[,,i]      <- ncvar_get(nc, varid = "RDON")

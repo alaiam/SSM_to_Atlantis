@@ -7,11 +7,11 @@ velma = F
 
 # Set path
 if (velma){
-  path <- paste0(here(), "/Step B/output_VELMA_",year,"_PON")
+  path <- paste0(here(), "/Step B/intermediate output archive/output_VELMA_",year,"_PON")
 }else{
-  path <- paste0(here(), "/Step B/output_No_VELMA_",year,"_PON")
+  path <- paste0(here(), "/Step B/intermediate output archive/output_No_VELMA_",year,"_PON")
 }
-setwd(path)
+# setwd(path)
 
 list.file <- sort(list.files(path))
 time = seq(0,730*12*60*60-1, 12*60*60) 
@@ -26,7 +26,7 @@ atlantis_input_LPON <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+
 atlantis_input_RPON <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1),box,length(time)))
 liste <- sort(list.file)
 for (i in 1:length(list.file)){
-  nc <- nc_open(paste0("PON_Atlantis_",i,".nc"))
+  nc <- nc_open(paste0(path, "/PON_Atlantis_",i,".nc"))
   pdt <- ncvar_get(nc, varid = "t")/60/60+1
   atlantis_input_LPON[,,i]      <- ncvar_get(nc, varid = "LPON")
   atlantis_input_RPON[,,i]      <- ncvar_get(nc, varid = "RPON")
@@ -126,7 +126,7 @@ ncatt_put(nc, 0, "geometry", "PugetSound_89b_070116.bgm")
 # Close the NetCDF file
 nc_close(nc)
 
-meanNA <- function(x){return(mean(x,na.rm = T))}
-plot(1:730, apply(atlantis_input_RPON, FUN = meanNA, MARGIN = 3))
-plot(1:730, apply(atlantis_input_LPON, FUN = meanNA, MARGIN = 3))
+# meanNA <- function(x){return(mean(x,na.rm = T))}
+# plot(1:730, apply(atlantis_input_RPON, FUN = meanNA, MARGIN = 3))
+# plot(1:730, apply(atlantis_input_LPON, FUN = meanNA, MARGIN = 3))
 

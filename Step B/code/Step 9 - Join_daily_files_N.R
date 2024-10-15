@@ -7,11 +7,11 @@ velma = F
 
 # Set path
 if (velma){
-  path <- paste0(here(), "/Step B/output_VELMA_",year,"_N")
+  path <- paste0(here(), "/Step B/intermediate output archive/output_VELMA_",year,"_N")
 }else{
-  path <- paste0(here(), "/Step B/output_No_VELMA_",year,"_N")
+  path <- paste0(here(), "/Step B/intermediate output archive/output_No_VELMA_",year,"_N")
 }
-setwd(path)
+# setwd(path)
 
 
 
@@ -30,7 +30,7 @@ atlantis_input_NO3 <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1
 atlantis_input_NH4 <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1),box,length(time)))
 liste <- sort(list.file)
 for (i in 1:length(list.file)){
-  nc <- nc_open(paste0("N_Atlantis_",i,".nc"))
+  nc <- nc_open(paste0(path, "/N_Atlantis_",i,".nc"))
   pdt <- ncvar_get(nc, varid = "t")/60/60+1
   atlantis_input_NO3[,,i]      <- ncvar_get(nc, varid = "NO3")
   atlantis_input_NH4[,,i]      <- ncvar_get(nc, varid = "NH4")
