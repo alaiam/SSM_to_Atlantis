@@ -22,11 +22,15 @@ file_name_output = r.file_name_output
 print(file_name_output)
 
 
+filename = "//nfsdata/SSM_contaminants/pcb_yr2011_wqm_time_avg_crop.nc"
+print(filename)
+file_name_output = "testPCB_B.nc"
+print(file_name_output)
 # Step 1b: define kriging function
 
 # Create an RTree instance for spatial indexing using pyinterp
 mesh = pyinterp.RTree()
-#(original_values=org_temp, original_lon=original_lon, original_lat=original_lat, new_lon=my, new_lat=mx)
+#(original_values=org_B1, original_lon=original_lon, original_lat=original_lat, new_lon=my, new_lat=mx)
 
 def kriging_universal(original_values, original_lon, original_lat, new_lat, new_lon):
     # Pack the original data into the RTree for spatial indexing (erases previous data)
@@ -77,7 +81,7 @@ original_siglev = np.array([-0., -0.03162277, -0.08944271, -0.16431676, -0.25298
 original_time = np.arange(0, 365, 0.5)
 
 #######
-# Step 2d: Start interpolation of variables like temperature, salinity and sigma layer values
+# Step 2d: Start interpolation of variables like PCB in phyto 1 and 2
 # Define the dimensions of the data
 siglay_size = len(original_siglay)
 time_size = len(original_time)
@@ -87,36 +91,32 @@ time_size = len(original_time)
 original_lat = lat
 original_lon = lon 
 
-# Create empty arrays to store the interpolated temperature, salinity, and sigma layer values
-new_regular_temp = np.full((len(original_time), len(
+# Create empty arrays to store the interpolated PBC1, PBC2
+new_regular_B1 = np.full((len(original_time), len(
     original_siglay), len(reg_lon), len(reg_lat)), np.nan)
-new_regular_salt = np.full((len(original_time), len(
+new_regular_DOC = np.full((len(original_time), len(
     original_siglay), len(reg_lon), len(reg_lat)), np.nan)
 
 
 # Loop over each depth layer and interpolate the data onto the regular grid
 for d in range(0, siglay_size):
   for t in range(0, time_size):  # Loop over time steps
-        org_temp = ssm_solution.temp[t][d].values  # Extract temperature values
-        org_salt = ssm_solution.salinity[t][d].values # Extract salinity values
+        org_B1 = ssm_solution.PCBCONALGW1[t][0][d].values  # Extract PCB in B1 values
+        org_B2 = ssm_solution.PCBCONALGW2[t][0][d].values # Extract PCB in B2 values
         
         #Krigging
-        new_regular_temp[t][d][:] = kriging_universal(
-            org_temp, original_lon, original_lat, my, mx)
-        new_regular_salt[t][d][:] = kriging_universal(
-            org_salt, original_lon, original_lat, my, mx)
+        new_regular_B1[t][d][:] = kriging_universal(
+            org_B1, original_lon, original_lat, my, mx)
+        new_regular_B2[t][d][:] = kriging_universal(
+            org_B2, original_lon, original_lat, my, mx)
 
 print('Interpolation variables done!')
 
-# org_salt = ssm_solution.salinity[1][4].values
-# new_regular_salt_test_l = kriging_universal(
-# org_salt, original_lon, original_lat, my, mx)
-
 import matplotlib.pyplot as plt
 plt.figure(figsize=(10, 10))
-plt.pcolormesh(mx, my, new_regular_temp[350][1], cmap='viridis')
-plt.colorbar(label='Temperature')
-plt.title('Interpolated Temperature')
+plt.pcolormesh(mx, my, new_regular_B1[1][0], cmap='viridis')
+plt.colorbar(label='PCB B1')
+plt.title('Interpolated PCB in B1')
 plt.xlabel('Longitude')
 plt.ylabel('Latitude')
 plt.show()
@@ -164,18 +164,18 @@ siglay_var.units = 'sigma_layers'
 siglay_var.standard_name = 'ocean_sigma/general_coordinate'
 siglay_var[:] = original_siglay.astype('float') 
 
-temp_var = nc.createVariable(
-    'temp', np.single, ('time', 'sigma_layer', 'longitude','latitude' ))
-temp_var.units = 'degrees_C'
-temp_var.standard_name = 'sea_water_temperature'
-temp_var[:] = new_regular_temp.astype('float')
+B1_var = nc.createVariable(
+    'PCBB1', np.single, ('time', 'sigma_layer', 'longitude','latitude' ))
+B1_var.units = 'g meters-3'
+B1_var.standard_name = 'PCB in B1'
+B1_var[:] = new_regular_B1.astype('float')
 
 
-salt_var = nc.createVariable(
-    'salinity', np.single, ('time', 'sigma_layer', 'longitude', 'latitude'))
-salt_var.units = '1e-3'
-salt_var.standard_name = 'sea_water_salinity'
-salt_var[:] = new_regular_salt.astype('float')
+B2_var = nc.createVariable(
+    'B2', np.single, ('time', 'sigma_layer', 'longitude', 'latitude'))
+B2_var.units = 'g meters-3'
+B2_var.standard_name = 'PCB in B2'
+
 
 nc.close()
 print('New ROMSgrid NetCDF file created!')

@@ -8,17 +8,19 @@ path        <- paste0(here(), "/Workflow/Step B/")
 input_path <- paste0(here(),"/Workflow/Step A/File_regular_grid/")
 
 # Velma?
-Velma = T
+Velma = F
+Nyear = 2011
 if (Velma){
-  filename <- paste0("VELMA/",Nyear,"/regular_grid_PON_velma_",Nyear,".nc")
-  output_path <- paste0(path, "intermediate output archive/output_VELMA_",Nyear,"_PON/")
+  filename <- paste0("VELMA/",Nyear,"/regular_grid_PCB_B_velma_",Nyear,".nc")
+  output_path <- paste0(path, "intermediate output archive/output_VELMA_",Nyear,"_PCB_B/")
   
 }else{
-  filename <- paste0("No_VELMA/",Nyear,"/regular_grid_PON_novelma_",Nyear,".nc")
-  output_path <- paste0(path, "intermediate output archive/output_No_VELMA_",Nyear,"_PON/")
+  filename <- paste0("No_VELMA/",Nyear,"/regular_grid_PCB_B_novelma_",Nyear,".nc")
+  output_path <- paste0(path, "intermediate output archive/output_No_VELMA_",Nyear,"_PCB_B/")
 }
 
 if (!file.exists(output_path)){dir.create(output_path)}
+
 
 ###########################################################################
 # Read data ROMS data
@@ -48,21 +50,21 @@ layer_thickness <- c(5,20,25,50,50,200)
 ############################################################################################
 step_file <- 1:730 #Days to divide the total files
 
-files <- sub("PON_Atlantis_", "", list.files(output_path))
+files <- sub("PCB_B_Atlantis_", "", list.files(output_path))
 files <- sort(as.numeric(sub(".nc", "", files)))
 out <- (1:730)[!1:730 %in% files]
 step_file <- out
 
-RPON_dim <- roms_vars %>% dplyr::filter(name==c("RPON")) %>% pluck('grd')
+PCB1_dim <- roms_vars %>% dplyr::filter(name==c("PCB1")) %>% pluck('grd')
 
 
 variable_before_Atlantis2 <- roms %>%
-  tidync::activate(RPON_dim) %>%
+  tidync::activate(PCB1_dim) %>%
   tidync::hyper_tibble(force = TRUE) %>%
-  dplyr::select(RPON, LPON, longitude, latitude, sigma_layer,time)%>%
+  dplyr::select(PCB1, PCB2, longitude, latitude, sigma_layer,time)%>%
   dplyr::rename(
-    RPON=RPON, 
-    LPON=LPON, 
+    PCB1=PCB1, 
+    PCB2=PCB2, 
     longitude = longitude,  
     latitude = latitude,  
     roms_layer = sigma_layer, time = time)
@@ -93,13 +95,13 @@ foreach(days = step_file) %dopar%{
   layer = 6
   N_var = 2
   
-  atlantis_input_RPON <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1),box,length(time)))
-  atlantis_input_LPON <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1),box,length(time)))
+  atlantis_input_PCB1 <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1),box,length(time)))
+  atlantis_input_PCB2 <- array(rep(NA,box*(layer+1)*length(time)), dim = c((layer+1),box,length(time)))
   
   for (i in 0:(box-1)){
     for (t in 1:length(time)){
-      all.layers_RPON = rep(NA,6)   # define an empty vector to receive the values of the 6 layers for RPON
-      all.layers_LPON = rep(NA,6) # define an empty vector to receive the values of the 6 layers for LPON
+      all.layers_PCB1 = rep(NA,6)   # define an empty vector to receive the values of the 6 layers for PCB1
+      all.layers_PCB2 = rep(NA,6) # define an empty vector to receive the values of the 6 layers for PCB2
       # Calculate the layer
       for (j in 1:layer){ 
         subset <-variables_polygons %>%
@@ -107,23 +109,23 @@ foreach(days = step_file) %dopar%{
         
         
         if (dim(subset)[1] == 0){
-          all.layers_RPON[j] = NA
-          all.layers_LPON[j] = NA
+          all.layers_PCB1[j] = NA
+          all.layers_PCB2[j] = NA
         }else{
-          all.layers_RPON[j] <- (mean(subset$RPON, na.rm = T)*1000)[[1]] #g to mg
-          all.layers_LPON[j] <- (mean(subset$LPON, na.rm = T)*1000)[[1]] #g to mg
-          # all.layers_RPON[j] <- (mean(subset$RPON, na.rm = T)*area[i+1,1]*layer_thickness[j]*1000)[[1]] #redfield ratio
-          # all.layers_LPON[j] <- (mean(subset$LPON, na.rm = T)*area[i+1,1]*layer_thickness[j]*1000)[[1]] #redfield ratio
+          all.layers_PCB1[j] <- (mean(subset$PCB1, na.rm = T)*1000)[[1]] #g to mg
+          all.layers_PCB2[j] <- (mean(subset$PCB2, na.rm = T)*1000)[[1]] #g to mg
+          # all.layers_PCB1[j] <- (mean(subset$PCB1, na.rm = T)*area[i+1,1]*layer_thickness[j]*1000)[[1]] #redfield ratio
+          # all.layers_PCB2[j] <- (mean(subset$PCB2, na.rm = T)*area[i+1,1]*layer_thickness[j]*1000)[[1]] #redfield ratio
         }
       }
       
-      keep <- all.layers_RPON[is.na(all.layers_RPON)]
-      all.layers_RPON <- c(rev(all.layers_RPON[!is.na(all.layers_RPON)]),keep,80000)  # Value in sediment from SSM (Letourneau et al. 2017, see p87)
-      atlantis_input_RPON[,i+1,t] <- all.layers_RPON
+      keep <- all.layers_PCB1[is.na(all.layers_PCB1)]
+      all.layers_PCB1 <- c(rev(all.layers_PCB1[!is.na(all.layers_PCB1)]),keep,NA)
+      atlantis_input_PCB1[,i+1,t] <- all.layers_PCB1
       
-      keep <- all.layers_LPON[is.na(all.layers_LPON)]
-      all.layers_LPON <- c(rev(all.layers_LPON[!is.na(all.layers_LPON)]),keep,10000)  # Value in sediment from SSM (Letourneau et al. 2017, see p87)
-      atlantis_input_LPON[,i+1,t] <- all.layers_LPON
+      keep <- all.layers_PCB2[is.na(all.layers_PCB2)]
+      all.layers_PCB2 <- c(rev(all.layers_PCB2[!is.na(all.layers_PCB2)]),keep,NA)
+      atlantis_input_PCB2[,i+1,t] <- all.layers_PCB2
       
     }
   }
@@ -135,35 +137,35 @@ foreach(days = step_file) %dopar%{
   # Define dimensions
   z_dim <- ncdim_def("z","layerNum", 1:(layer+1))
   b_dim <- ncdim_def("b","boxNum", 0:(box-1))
-  t_dim <- ncdim_def("t","seconds since 2095-01-01", (time-1)*60*60)
+  t_dim <- ncdim_def("t","seconds since 2011-01-01", (time-1)*60*60)
   # Define variables
   z_var <- ncvar_def("z", "int", dim = list(z_dim), units = "depthBin", longname = "z")
   b_var <- ncvar_def("b", "int", dim = list(b_dim), units = "boxNum", longname = "b")
-  t_var <- ncvar_def("t", "double", dim = list(t_dim), units = "seconds since 2095-01-01", longname = "t")
-  RPON <- ncvar_def("RPON", "double", dim = list( z_dim,b_dim, t_dim),
-                   units = "mgN", missval = NA, longname = "RPON")
-  LPON <- ncvar_def("LPON", "double", dim = list( z_dim,b_dim, t_dim),
-                   units = "g.L-1", missval = NA, longname = "LPON")
-  output_filename = paste0("PON_Atlantis_", days, ".nc")
+  t_var <- ncvar_def("t", "double", dim = list(t_dim), units = "seconds since 2011-01-01", longname = "t")
+  PCB1 <- ncvar_def("PCB1", "double", dim = list( z_dim,b_dim, t_dim),
+                   units = "mgN", missval = NA, longname = "PCB1")
+  PCB2 <- ncvar_def("PCB2", "double", dim = list( z_dim,b_dim, t_dim),
+                   units = "g.L-1", missval = NA, longname = "PCB2")
+  output_filename = paste0("PCB_B__Atlantis_", days, ".nc")
   # Create a NetCDF file
   nc_filename <- paste0(output_path, output_filename)
-  nc <- nc_create(nc_filename, vars = list(RPON = RPON, LPON = LPON))
+  nc <- nc_create(nc_filename, vars = list(PCB1 = PCB1, PCB2 = PCB2))
   
   # Put dimensions and variables in the NetCDF file
   
   ncvar_put(nc, z_var, 1:(layer+1))
   ncvar_put(nc, b_var, 0:(box-1))
   ncvar_put(nc, t_var, (time-1)*60*60)
-  ncvar_put(nc, RPON, atlantis_input_RPON, start = c(1,1,1),count = c( layer+1,box, length(time)))
-  ncvar_put(nc, LPON, atlantis_input_LPON, start = c(1,1,1),count = c( layer+1,box, length(time)))
+  ncvar_put(nc, PCB1, atlantis_input_PCB1, start = c(1,1,1),count = c( layer+1,box, length(time)))
+  ncvar_put(nc, PCB2, atlantis_input_PCB2, start = c(1,1,1),count = c( layer+1,box, length(time)))
   
-  # Add minimum and maximum values to RPON variable attributes
-  ncatt_put(nc, "RPON", "valid_min", -50)
-  ncatt_put(nc, "RPON", "valid_max", 200)
+  # Add minimum and maximum values to PCB1 variable attributes
+  ncatt_put(nc, "PCB1", "valid_min", -50)
+  ncatt_put(nc, "PCB1", "valid_max", 200)
   
-  # Add minimum and maximum values to LPON variable attributes
-  ncatt_put(nc, "LPON", "valid_min", 0)
-  ncatt_put(nc, "LPON", "valid_max", 2000)
+  # Add minimum and maximum values to PCB2 variable attributes
+  ncatt_put(nc, "PCB2", "valid_min", 0)
+  ncatt_put(nc, "PCB2", "valid_max", 2000)
   
   # Add dt attribute to t variable
   ncatt_put(nc, "t", "dt", 43200.0)

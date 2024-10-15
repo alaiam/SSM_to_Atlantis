@@ -1,5 +1,4 @@
 library(reshape2)
-year = 2011
 ###########################################################################
 # Path and names definition
 
@@ -9,12 +8,12 @@ input_path <- paste0(here(),"/Workflow/Step A/File_regular_grid/")
 # Velma?
 velma = T
 if (velma){
-  filename <- paste0("VELMA/",year,"/regular_grid_UVW_velma_",year,".nc")
-  output_path <- paste0(path, "intermediate output archive/output_VELMA_",year,"_ww/")
+  filename <- paste0("VELMA/",Nyear,"/regular_grid_UVW_velma_",Nyear,".nc")
+  output_path <- paste0(path, "intermediate output archive/output_VELMA_",Nyear,"_ww/")
   
 }else{
-  filename <- paste0("No_VELMA/",year,"/regular_grid_UVW_novelma_",year,".nc")
-  output_path <- paste0(path, "intermediate output archive/output_No_VELMA_",year,"_ww/")
+  filename <- paste0("No_VELMA/",Nyear,"/regular_grid_UVW_novelma_",Nyear,".nc")
+  output_path <- paste0(path, "intermediate output archive/output_No_VELMA_",Nyear,"_ww/")
 }
 
 if (!file.exists(output_path)){dir.create(output_path)}

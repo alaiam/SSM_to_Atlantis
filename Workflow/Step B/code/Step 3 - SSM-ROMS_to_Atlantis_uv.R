@@ -6,13 +6,13 @@ path        <- paste0(here(), "/Workflow/Step B/")
 input_path <- paste0(here(),"/Workflow/Step A/File_regular_grid/")
 
 if (velma == T){
-  filename_u <- paste0("VELMA/",year,"/regular_grid_UVW_velma_",year,".nc")
-  filename_v <- paste0("VELMA/",year,"/regular_grid_UVW_velma_",year,".nc")
-  output_path <- paste0(path, "intermediate output archive/output_VELMA_",year,"_uv/")
+  filename_u <- paste0("VELMA/",Nyear,"/regular_grid_UVW_velma_",Nyear,".nc")
+  filename_v <- paste0("VELMA/",Nyear,"/regular_grid_UVW_velma_",Nyear,".nc")
+  output_path <- paste0(path, "intermediate output archive/output_VELMA_",Nyear,"_uv/")
 }else{
-  filename_u <- filename <- paste0("No_VELMA/",year,"/regular_grid_UVW_novelma_",year,".nc")
-  filename_v <- filename <- paste0("No_VELMA/",year,"/regular_grid_UVW_novelma_",year,".nc")
-  output_path <- paste0(path, "intermediate output archive/output_No_VELMA_",year,"_uv/")
+  filename_u <- filename <- paste0("No_VELMA/",Nyear,"/regular_grid_UVW_novelma_",Nyear,".nc")
+  filename_v <- filename <- paste0("No_VELMA/",Nyear,"/regular_grid_UVW_novelma_",Nyear,".nc")
+  output_path <- paste0(path, "intermediate output archive/output_No_VELMA_",Nyear,"_uv/")
   }
 
 if (!file.exists(output_path)){dir.create(output_path)}

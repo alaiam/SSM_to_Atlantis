@@ -3,11 +3,11 @@
 
 library(ncdf4)
 library(here)
+library(sf) 
 library(raster)#
 library(ncdf4)
 library(tabularaster)
 library(rbgm)
-library(sf) 
 library(tidync)
 library(tidyverse)
 library(doParallel)
@@ -37,47 +37,47 @@ SSMtoAtlantis <- function(year, velma, filename.hyd, filename.wq){
   write.csv(start.time, "starttime.csv")
   step.time <- c()
    # hyd
-  # print("TS")
-  # var.SSMtoAtlantis(year = .year, variable = "temperature", velma = .velma, filename = .filename.hyd)
-  # print("UVW")
-  # step.time <- c(step.time,Sys.time())
-  # write.csv(step.time, "steptime.csv")
-  # 
-  # var.SSMtoAtlantis(year = .year, variable = "U", velma = .velma, filename = .filename.hyd)
-  # step.time <- c(step.time,Sys.time())
-  # write.csv(step.time, "steptime.csv")
-  # 
-  # #wq
-  # print("Z")
-  # var.SSMtoAtlantis(year = .year, variable = "SZ", velma = .velma, filename = .filename.wq)
-  # step.time <- c(step.time,Sys.time())
-  # write.csv(step.time, "steptime.csv")
-  # 
-  # print("P")
-  # var.SSMtoAtlantis(year = .year, variable = "SP", velma = .velma, filename = .filename.wq)
-  # step.time <- c(step.time,Sys.time())
-  # write.csv(step.time, "steptime.csv")
-  # 
-  # print("N")
-  # var.SSMtoAtlantis(year = .year, variable = "NO3", velma = .velma, filename = .filename.wq)
-  # step.time <- c(step.time,Sys.time())
-  # write.csv(step.time, "steptime.csv")
-  # 
-  # print("DON")
-  # var.SSMtoAtlantis(year = .year, variable = "RDON", velma = .velma, filename = .filename.wq)
-  # step.time <- c(step.time,Sys.time())
-  # write.csv(step.time, "steptime.csv")
-  
+  print("TS")
+  var.SSMtoAtlantis(year = .year, variable = "temperature", velma = .velma, filename = .filename.hyd)
+  print("UVW")
+  step.time <- c(step.time,Sys.time())
+  write.csv(step.time, "steptime.csv")
+
+  var.SSMtoAtlantis(year = .year, variable = "U", velma = .velma, filename = .filename.hyd)
+  step.time <- c(step.time,Sys.time())
+  write.csv(step.time, "steptime.csv")
+
+  #wq
+  print("Z")
+  var.SSMtoAtlantis(year = .year, variable = "SZ", velma = .velma, filename = .filename.wq)
+  step.time <- c(step.time,Sys.time())
+  write.csv(step.time, "steptime.csv")
+
+  print("P")
+  var.SSMtoAtlantis(year = .year, variable = "SP", velma = .velma, filename = .filename.wq)
+  step.time <- c(step.time,Sys.time())
+  write.csv(step.time, "steptime.csv")
+
+  print("N")
+  var.SSMtoAtlantis(year = .year, variable = "NO3", velma = .velma, filename = .filename.wq)
+  step.time <- c(step.time,Sys.time())
+  write.csv(step.time, "steptime.csv")
+
+  print("DON")
+  var.SSMtoAtlantis(year = .year, variable = "RDON", velma = .velma, filename = .filename.wq)
+  step.time <- c(step.time,Sys.time())
+  write.csv(step.time, "steptime.csv")
+
   print("O2")
   var.SSMtoAtlantis(year = .year, variable = "Oxygen", velma = .velma, filename = .filename.wq)
   step.time <- c(step.time,Sys.time())
   write.csv(step.time, "steptime.csv")
-  
+
   print("PON")
   var.SSMtoAtlantis(year = .year, variable = "LPON", velma = .velma, filename = .filename.wq)
   step.time <- c(step.time,Sys.time())
   write.csv(step.time, "steptime.csv")
-  
+
   end.time <- Sys.time()
   write.csv(end.time, "endtime.csv")
   
@@ -93,7 +93,7 @@ var.SSMtoAtlantis <- function(year, variable, velma, filename){
   
   if(!variable%in%list.var) stop("The variable is not in SSM, please try:
 salinity, temperature, U, V, W, NO3, NH4, SZ, LZ, MZ, SP, LP, Oxygen, LPON, RPON, RDON")
-  # print("var1")
+  print("var1")
   StepA(year = year, variable = variable, velma = velma, filename = filename)
   print("var2")
   StepB(year = year, variable = variable, velma = velma)
@@ -277,6 +277,6 @@ salinity, temperature, U, V, W, NO3, NH4, SZ, LZ, MZ, SP, LP, Oxygen, LPON, RPON
       source("Workflow/Step B/code/Step 15 - Join_daily_files_DON.R")
     }
     }}
-  
+#test  
 
 
