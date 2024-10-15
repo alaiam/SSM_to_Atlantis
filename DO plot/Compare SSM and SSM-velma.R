@@ -19,11 +19,11 @@ plot_SSM_physics <- function(varname, unit = "", varid = varname, title = title)
     file_ROMS <- "data/pugetsound_roms_temp.nc" 
   }
   
-  file_SSM <- paste0("Step B/Final outputs/noVELMA/pugetsound_SSM_Atlantis_",varname,"_2011.nc")
-  file_SSM_velma <- paste0("Step B/Final outputs/VELMA/2011/pugetsound_SSM_Atlantis_",varname,"_velma_2011.nc")
+  file_SSM <- paste0("Workflow/Step B/Final outputs/No_VELMA/2011/pugetsound_SSM_Atlantis_",varname,"_novelma_2011.nc")
+  file_SSM_velma <- paste0("Workflow/Step B/Final outputs/VELMA/2011/pugetsound_SSM_Atlantis_",varname,"_velma_2011.nc")
   
   # volume data for weighted average
-  atlantis_bgm <- read_bgm("Step B/PugetSound_89b_070116.bgm")
+  atlantis_bgm <- read_bgm("Workflow/Step B/PugetSound_89b_070116.bgm")
   atlantis_sf <- atlantis_bgm %>% box_sf()
   area <- atlantis_sf$area
   
@@ -253,12 +253,12 @@ plot_SSM_physics <- function(varname, unit = "", varid = varname, title = title)
 plot_SSM_wq <- function(varname, unit = "", varid = varname, title = title){
   
   ylab = paste0(varname, " ", unit)
-  file_SSM <- paste0("Step B/Final outputs/noVELMA/pugetsound_SSM_Atlantis_",varname,"_2011.nc")
-  file_SSM_velma <- paste0("Step B/Final outputs/VELMA/2011/pugetsound_SSM_Atlantis_",varname,"_velma_2011.nc")
+  file_SSM <- paste0("Workflow/Step B/Final outputs/No_VELMA/2011/pugetsound_SSM_Atlantis_",varname,"_novelma_2011.nc")
+  file_SSM_velma <- paste0("Workflow/Step B/Final outputs/VELMA/2011/pugetsound_SSM_Atlantis_",varname,"_velma_2011.nc")
   
   
   # volume data for weighted average
-  atlantis_bgm <- read_bgm("Step B/PugetSound_89b_070116.bgm")
+  atlantis_bgm <- read_bgm("Workflow/Step B/PugetSound_89b_070116.bgm")
   atlantis_sf <- atlantis_bgm %>% box_sf()
   area <- atlantis_sf$area
   
@@ -488,16 +488,16 @@ plot_SSM <- function(varname){
     plot_SSM(varname = "temperature")
     plot_SSM(varname = "Oxygen")
 
-    # plot_SSM(varname = "NH4")
-    # plot_SSM(varname = "NO3")
-    # plot_SSM(varname = "SP")
-    # plot_SSM(varname = "LP")
-    # plot_SSM(varname = "SZ")
-    # plot_SSM(varname = "MZ")
-    # plot_SSM(varname = "LZ")
-    # plot_SSM(varname = "LPON")
-    # plot_SSM(varname = "RPON")
-    # plot_SSM(varname = "RDON")
+    plot_SSM(varname = "NH4")
+    plot_SSM(varname = "NO3")
+    plot_SSM(varname = "SP")
+    plot_SSM(varname = "LP")
+    plot_SSM(varname = "SZ")
+    plot_SSM(varname = "MZ")
+    plot_SSM(varname = "LZ")
+    plot_SSM(varname = "LPON")
+    plot_SSM(varname = "RPON")
+    plot_SSM(varname = "RDON")
     dev.off()
   }else{
     
